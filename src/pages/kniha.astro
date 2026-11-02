@@ -1,0 +1,182 @@
+---
+import { url } from '../lib/url';
+import { Image, getImage } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BuyBookButton from '../components/BuyBookButton.astro';
+import Icon from '../components/Icon.astro';
+import bookImage from '../assets/book/kniha.jpg';
+import portrait from '../assets/people/dalibor.jpg';
+import { book, formatPrice } from '../config/site';
+import { bookProduct, breadcrumbs } from '../lib/schema';
+
+const description =
+  'Kniha KOUČING od Dalibora Bednaříka – praktický a zážitkový sprievodca koučovaním. Princíp polarít, GROW model a situácie z 22 rokov praxe. Predpredaj za 20 €.';
+
+const ogImage = await getImage({ src: bookImage, width: 1200, height: 630, fit: 'cover', format: 'jpg' });
+
+const pillars = [
+  {
+    title: 'Princíp polarít',
+    text: 'Život aj ľudské vnímanie fungujú v dynamickom napätí protikladov – vnútro a vonkajšok, istota a zmena, výkon a oddych, rozhodnosť a pochybnosť. Kniha prináša 8 princípov práce s polaritami (kľúčové slová, rozbaľovanie, reťazenie, polarity, premostenie, rámcovanie, 4 pozície vnímania, otvorenosť), ktoré tvoria prirodzený rámec a mindset pre prácu s ľuďmi.',
+  },
+  {
+    title: 'GROW model a 5 krokov koučovacieho procesu',
+    text: 'Praktická kostra rozhovoru v piatich krokoch: Téma, Kontrakt, Zdroje, Možnosti a Implementácia. Dôraz sa kladie na objavovanie vlastných vnútorných zdrojov klienta a na priestor medzi prítomnosťou a želanou budúcnosťou.',
+  },
+];
+
+const themes = [
+  {
+    title: 'Praktické aplikácie a modelové situácie',
+    text: 'Reálne výzvy z praxe a „vnútorný svet klienta“ – napríklad keď klient veľa rozpráva, nemá tému, je príliš emocionálny, mlčí alebo rieši tretiu osobu.',
+  },
+  { title: 'Vnútorný svet kouča', text: 'Dynamika napätia, sebareflexia a to, ako sa kouč učí spolu s klientom.' },
+  {
+    title: 'Metaforický a obrazný štýl',
+    text: 'Množstvo analógií, príbehov a metafor, aby čitateľ nečítal len teóriu o koučingu, ale spoznával v texte sám seba.',
+  },
+  {
+    title: 'Rovnováha medzi zmenou a prijatím',
+    text: 'Kniha neučí len to, ako veci meniť, ale pripomína aj zrelosť spočívajúcu v prijatí reality a vecí, ktoré ovplyvniť nemôžeme.',
+  },
+];
+
+const readers = [
+  { title: 'Profesionálni kouči, mentori a supervízori', text: 'Hľadajú hlbší rozmer práce s klientom a chcú rozšíriť svoj rámec o prácu s polaritami.' },
+  { title: 'Manažéri a lídri', text: 'Vedú ľudí, potrebujú zorientovať tímy v neistom prostredí a rozvíjať ich potenciál koučovacím prístupom.' },
+  { title: 'HR a rozvojoví pracovníci', text: 'Zastrešujú vzdelávanie a sebarozvoj v organizáciách.' },
+  {
+    title: 'Zvedaví jednotlivci',
+    text: 'Majú radi obrazný štýl a chcú lepšie porozumieť vlastným motiváciám, rozhodnutiam, vzťahom a fungovaniu ľudskej mysle.',
+  },
+];
+---
+
+<BaseLayout
+  title="Kniha KOUČING – Polarity pre šťastný život a úspech v práci"
+  description={description}
+  image={ogImage.src}
+  type="book"
+  jsonLd={[bookProduct(ogImage.src, description), breadcrumbs([{ name: 'Kniha KOUČING', path: '/kniha' }])]}
+>
+  <!-- Hero / buy box -->
+  <section class="overflow-hidden bg-sand-100/60">
+    <div class="container-page grid items-center gap-12 py-14 md:py-20 lg:grid-cols-2">
+      <div class="relative">
+        <Image
+          src={bookImage}
+          alt="Kniha KOUČING – Polarity pre šťastný život a úspech v práci, autor Dalibor Bednařík"
+          widths={[480, 800, 1200]}
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          priority
+          class="w-full rounded-[2rem]"
+        />
+      </div>
+      <div>
+        <nav aria-label="Omrvinková navigácia" class="mb-6 text-sm text-muted">
+          <a href={url('/')} class="hover:text-brand-900">Domov</a> <span aria-hidden="true">/</span> <span aria-current="page" class="text-ink">Kniha</span>
+        </nav>
+        {book.preorder && <p class="inline-flex rounded-full bg-brand-900 px-3.5 py-1.5 text-sm font-semibold text-white">Predpredaj · vychádza {book.releaseLabel}</p>}
+        <h1 class="mt-5 text-5xl leading-[1.05] font-semibold md:text-6xl">{book.shortTitle}</h1>
+        <p class="mt-3 font-serif text-2xl text-brand-800 italic">Polarity pre šťastný život a úspech v práci</p>
+        <p class="mt-2 text-muted">Dalibor Bednařík</p>
+
+        <p class="mt-6 text-lg leading-relaxed">
+          Kniha KOUČING nie je typickou akademickou učebnicou. Je to praktický a zážitkový sprievodca svetom koučovania – s
+          viac ako 22 rokmi skúseností z praxe, so základmi výcviku Business & Life Coaching CORE a LEVEL 1 a s mnohými
+          situáciami z koučovacej praxe.
+        </p>
+
+        <div class="card mt-8 p-6">
+          <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <span class="font-serif text-4xl font-semibold text-brand-950">{formatPrice(book.price + book.shipping)}</span>
+            <span class="text-muted">vrátane poštovného na Slovensku</span>
+          </div>
+          <p class="mt-1 text-sm text-muted">Kniha {formatPrice(book.price)} + doprava {formatPrice(book.shipping)}</p>
+          <BuyBookButton class="mt-5 w-full sm:w-auto" />
+          <ul class="mt-5 space-y-2 text-[15px] text-muted">
+            <li class="flex gap-2.5">
+              <Icon name="check" class="mt-0.5 size-5 shrink-0 text-brand-700" />
+              {book.stripeLink ? 'Zaplatíte bezpečne kartou, Apple Pay alebo Google Pay' : 'Objednávku a platobné údaje vám potvrdíme e-mailom'}
+            </li>
+            <li class="flex gap-2.5"><Icon name="check" class="mt-0.5 size-5 shrink-0 text-brand-700" />Vydanie: {book.releaseLabel}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About the book -->
+  <section class="section" aria-labelledby="o-knihe">
+    <div class="container-page">
+      <div class="max-w-2xl">
+        <p class="eyebrow">O čom je kniha</p>
+        <h2 id="o-knihe" class="mt-3 text-4xl font-semibold md:text-5xl">Dva piliere koučovania</h2>
+      </div>
+      <div class="mt-12 grid gap-6 md:grid-cols-2">
+        {
+          pillars.map((p, i) => (
+            <article class="card p-8">
+              <span class="font-serif text-5xl text-brand-200">0{i + 1}</span>
+              <h3 class="mt-4 text-2xl font-semibold">{p.title}</h3>
+              <p class="mt-3 leading-relaxed text-muted">{p.text}</p>
+            </article>
+          ))
+        }
+      </div>
+
+      <h3 class="mt-20 text-3xl font-semibold">Hlavné témy</h3>
+      <dl class="mt-8 grid gap-x-10 gap-y-8 md:grid-cols-2">
+        {
+          themes.map((t) => (
+            <div class="border-l-2 border-brand-200 pl-6">
+              <dt class="font-semibold text-brand-950">{t.title}</dt>
+              <dd class="mt-2 text-muted">{t.text}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <!-- Readers -->
+  <section class="section bg-sand-100/60" aria-labelledby="komu">
+    <div class="container-page">
+      <div class="max-w-2xl">
+        <p class="eyebrow">Komu je kniha určená</p>
+        <h2 id="komu" class="mt-3 text-4xl font-semibold md:text-5xl">Pre každého, kto pracuje s ľuďmi – a so sebou</h2>
+      </div>
+      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          readers.map((r) => (
+            <article class="card p-7">
+              <h3 class="text-xl leading-snug font-semibold">{r.title}</h3>
+              <p class="mt-3 text-[15px] leading-relaxed text-muted">{r.text}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Quote + author -->
+  <section class="section" aria-labelledby="autor">
+    <div class="container-page grid items-center gap-12 md:grid-cols-[auto_1fr]">
+      <Image src={portrait} alt="Dalibor Bednařík" width={280} height={280} class="size-48 rounded-full object-cover md:size-64" />
+      <div>
+        <blockquote class="font-serif text-3xl leading-snug text-brand-950 italic md:text-4xl">
+          „Kniha Koučing je ako kuchárska kniha. Odporúčame po prečítaní začať variť v praxi.“
+        </blockquote>
+        <h2 id="autor" class="mt-8 font-sans text-sm font-semibold tracking-[0.14em] text-brand-700 uppercase">O autorovi</h2>
+        <p class="mt-3 max-w-2xl text-lg text-muted">
+          Dalibor Bednařík je psychológ a profesionálny kouč ICF MCC, zakladateľ Coaching Academy a Kouč roka 2019. Od roku
+          2003 má za sebou viac ako 2 500 hodín koučingu.
+        </p>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <BuyBookButton />
+          <a href={url('/vycviky/icf-level-1')} class="btn-secondary">Výcvik postavený na princípe polarít</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,40 @@
+---
+import { url } from '../lib/url';
+interface Props {
+  title: string;
+  eyebrow?: string;
+  lead?: string;
+  breadcrumbs?: { label: string; href?: string }[];
+}
+
+const { title, eyebrow, lead, breadcrumbs = [] } = Astro.props;
+---
+
+<section class="border-b border-sand-200 bg-sand-100/60">
+  <div class="container-page py-14 md:py-20">
+    {
+      breadcrumbs.length > 0 && (
+        <nav aria-label="Omrvinková navigácia" class="mb-6 text-sm text-muted">
+          <ol class="flex flex-wrap items-center gap-1.5">
+            <li><a href={url('/')} class="hover:text-brand-900">Domov</a></li>
+            {breadcrumbs.map((crumb) => (
+              <li class="flex items-center gap-1.5">
+                <span aria-hidden="true">/</span>
+                {crumb.href ? <a href={url(crumb.href)} class="hover:text-brand-900">{crumb.label}</a> : <span aria-current="page" class="text-ink">{crumb.label}</span>}
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )
+    }
+    <div class="grid items-center gap-10 md:grid-cols-[1fr_auto]">
+      <div class="max-w-3xl">
+        {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+        <h1 class="mt-3 text-4xl leading-[1.1] font-semibold md:text-5xl lg:text-6xl">{title}</h1>
+        {lead && <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted md:text-xl">{lead}</p>}
+        <slot />
+      </div>
+      <slot name="aside" />
+    </div>
+  </div>
+</section>

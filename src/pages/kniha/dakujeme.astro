@@ -1,0 +1,21 @@
+---
+import { url } from '../../lib/url';
+// Stripe Payment Link redirects here after a successful payment.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { book, site } from '../../config/site';
+---
+
+<BaseLayout title="Ďakujeme za objednávku" description="Potvrdenie objednávky knihy KOUČING." noindex>
+  <section class="container-page flex flex-col items-center py-24 text-center md:py-32">
+    <p class="eyebrow">Objednávka prijatá</p>
+    <h1 class="mt-4 max-w-2xl text-4xl leading-tight font-semibold md:text-5xl">Ďakujeme, že ste si objednali knihu {book.shortTitle}</h1>
+    <p class="mt-6 max-w-xl text-lg text-muted">
+      Potvrdenie platby vám prišlo e-mailom.{book.preorder && ` Kniha vychádza v termíne ${book.releaseLabel} – o odoslaní vás budeme informovať.`} Ak
+      máte otázky, napíšte na <a href={`mailto:${site.email}`} class="text-brand-800 underline">{site.email}</a>.
+    </p>
+    <div class="mt-10 flex flex-wrap justify-center gap-3">
+      <a href={url('/')} class="btn-primary">Späť na úvod</a>
+      <a href={url('/vycviky')} class="btn-secondary">Pozrieť výcviky</a>
+    </div>
+  </section>
+</BaseLayout>

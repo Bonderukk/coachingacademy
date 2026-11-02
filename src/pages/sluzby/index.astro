@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+import CtaBanner from '../../components/CtaBanner.astro';
+import { breadcrumbs } from '../../lib/schema';
+
+const services = (await getCollection('sluzby')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout
+  title="Koučing, mentoring a workshopy"
+  description="Individuálny, tímový a párový koučing, leadership programy pre firmy a workshopy o vzťahoch. Psychológ a MCC kouč Dalibor Bednařík, Bratislava."
+  jsonLd={breadcrumbs([{ name: 'Služby', path: '/sluzby' }])}
+>
+  <PageHero
+    eyebrow="Služby"
+    title="Koučing, mentoring a workshopy"
+    lead="Pre jednotlivcov, páry, tímy aj celé firmy. Komplexný koučing postavený na GROW modeli, systemickom prístupe, princípe polarít a Mindset Evolution."
+    breadcrumbs={[{ label: 'Služby' }]}
+  />
+
+  <section class="section">
+    <div class="container-page grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {services.map((service) => <ServiceCard service={service} />)}
+    </div>
+  </section>
+
+  <CtaBanner />
+</BaseLayout>

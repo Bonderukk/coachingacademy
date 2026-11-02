@@ -1,0 +1,17 @@
+---
+import { url } from '../lib/url';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Stránka sa nenašla" description="Táto stránka neexistuje." noindex>
+  <section class="container-page flex flex-col items-center py-24 text-center md:py-36">
+    <p class="font-serif text-8xl font-semibold text-brand-200">404</p>
+    <h1 class="mt-6 text-4xl font-semibold md:text-5xl">Táto stránka sa nenašla</h1>
+    <p class="mt-4 max-w-md text-lg text-muted">Možno bola presunutá pri prechode na nový web. Skúste začať na úvodnej stránke.</p>
+    <div class="mt-10 flex flex-wrap justify-center gap-3">
+      <a href={url('/')} class="btn-primary">Úvodná stránka</a>
+      <a href={url('/vycviky')} class="btn-secondary">Výcviky</a>
+      <a href={url('/kniha')} class="btn-secondary">Kniha</a>
+    </div>
+  </section>
+</BaseLayout>

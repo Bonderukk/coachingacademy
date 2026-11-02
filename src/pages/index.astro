@@ -1,0 +1,218 @@
+---
+import { url } from '../lib/url';
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CourseCard from '../components/CourseCard.astro';
+import TestimonialCard from '../components/TestimonialCard.astro';
+import BookPromo from '../components/BookPromo.astro';
+import CtaBanner from '../components/CtaBanner.astro';
+import Icon from '../components/Icon.astro';
+import portrait from '../assets/people/dalibor.jpg';
+import badgeMcc from '../assets/badges/icf-mcc.png';
+import badgeLevel1 from '../assets/badges/icf-level-1.png';
+import badgeLevel2 from '../assets/badges/icf-level-2.png';
+import badgePcic from '../assets/badges/pcic.png';
+import iconJednotlivci from '../assets/icons/jednotlivci.png';
+import iconKouci from '../assets/icons/kouci.png';
+import iconFirmy from '../assets/icons/firmy.png';
+import { site } from '../config/site';
+import { organization } from '../lib/schema';
+
+const courses = (await getCollection('vycviky')).sort((a, b) => a.data.order - b.data.order);
+const testimonials = (await getCollection('referencie')).filter((t) => t.data.featured);
+
+const badges = [
+  { src: badgeMcc, alt: 'ICF Master Certified Coach (MCC)' },
+  { src: badgeLevel1, alt: 'ICF Level 1 – akreditované koučovacie vzdelávanie' },
+  { src: badgeLevel2, alt: 'ICF Level 2 – akreditované koučovacie vzdelávanie' },
+  { src: badgePcic, alt: 'PCIC – Professional Certified Integrative Coach' },
+];
+
+const stats = [
+  { value: '2 500+', label: 'hodín individuálneho koučingu' },
+  { value: '2011', label: 'odkedy vedieme koučovacie výcviky' },
+  { value: 'ICF', label: 'akreditované výcviky od roku 2015' },
+  { value: '100+', label: 'epizód podcastu o koučingu' },
+];
+
+const audiences = [
+  {
+    icon: iconJednotlivci,
+    title: 'Jednotlivci',
+    text: 'Kvalitné, intenzívne a praktické sebarozvojové programy pre tých, ktorí chcú zmeniť svoj pracovný a súkromný život k lepšiemu.',
+    href: '/sluzby/individualny-koucing',
+    link: 'Individuálny koučing',
+  },
+  {
+    icon: iconKouci,
+    title: 'Kouči',
+    text: 'Základné a nadstavbové programy pre koučov. Medzinárodne ICF certifikované programy s domácimi aj zahraničnými lektormi.',
+    href: '/vycviky',
+    link: 'Koučovacie výcviky',
+  },
+  {
+    icon: iconFirmy,
+    title: 'Firmy',
+    text: 'Individuálne a skupinové rozvojové programy zamerané na koučing, mentoring a leadership – šité na mieru.',
+    href: '/sluzby/timovy-koucing',
+    link: 'Programy pre firmy',
+  },
+];
+
+const jsonLd = [
+  { '@context': 'https://schema.org', ...organization },
+  { '@context': 'https://schema.org', '@type': 'WebSite', name: site.fullName, url: site.url, inLanguage: 'sk' },
+];
+---
+
+<BaseLayout jsonLd={jsonLd}>
+  <!-- Hero -->
+  <section class="overflow-hidden">
+    <div class="container-page grid items-center gap-14 py-14 md:py-20 lg:grid-cols-[1.15fr_0.85fr] lg:py-24">
+      <div>
+        <p class="eyebrow">Koučingová akadémia Dalibora Bednaříka</p>
+        <h1 class="mt-4 text-[2.6rem] leading-[1.05] font-semibold sm:text-6xl lg:text-[4.25rem]">
+          Váš lokálny partner pre koučing <em class="font-medium text-brand-800">svetovej úrovne</em>
+        </h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-muted md:text-xl">
+          Medzinárodne ICF akreditované koučovacie výcviky, individuálny a tímový koučing v Bratislave. Vedie psychológ a MCC
+          kouč Dalibor Bednařík.
+        </p>
+        <div class="mt-9 flex flex-wrap gap-3">
+          <a href={url('/vycviky')} class="btn-primary">Koučovacie výcviky</a>
+          <a href={url('/sluzby/individualny-koucing')} class="btn-secondary">Individuálny koučing</a>
+        </div>
+        <ul class="mt-12 flex flex-wrap items-center gap-3 sm:gap-5" aria-label="Akreditácie a certifikácie">
+          {
+            badges.map((b) => (
+              <li>
+                <Image src={b.src} alt={b.alt} width={128} height={128} class="size-14 object-contain mix-blend-multiply sm:size-16" />
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="relative mx-auto w-full max-w-md lg:max-w-none">
+        <div class="absolute -inset-3 -z-10 rotate-3 rounded-[2.5rem] bg-sand-200/70"></div>
+        <Image
+          src={portrait}
+          alt="Dalibor Bednařík, psychológ a profesionálny kouč ICF MCC"
+          widths={[420, 720, 1000]}
+          sizes="(min-width: 1024px) 38vw, (min-width: 448px) 448px, 100vw"
+          priority
+          class="aspect-[4/5] w-full rounded-[2rem] object-cover object-top"
+        />
+        <div class="card absolute -bottom-6 left-4 flex items-center gap-3 px-5 py-4 shadow-xl shadow-brand-950/10 sm:left-8">
+          <span class="flex size-11 items-center justify-center rounded-full bg-brand-900 font-serif text-white">19</span>
+          <span class="leading-tight">
+            <span class="block font-serif text-lg text-brand-950">Kouč roka 2019</span>
+            <span class="block text-sm text-muted">Víťaz odbornej ankety</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="border-y border-sand-200 bg-white" aria-label="Coaching Academy v číslach">
+    <dl class="container-page grid grid-cols-2 gap-x-6 gap-y-8 py-10 md:grid-cols-4 md:py-12">
+      {
+        stats.map((s) => (
+          <div class="flex flex-col gap-1">
+            <dt class="text-[15px] text-muted">{s.label}</dt>
+            <dd class="order-first font-serif text-4xl font-semibold text-brand-900 md:text-5xl">{s.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <!-- Courses -->
+  <section class="section" aria-labelledby="vycviky-nadpis">
+    <div class="container-page">
+      <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div class="max-w-2xl">
+          <p class="eyebrow">Ponuka výcvikov</p>
+          <h2 id="vycviky-nadpis" class="mt-3 text-4xl font-semibold md:text-5xl">ICF koučovacie výcviky</h2>
+          <p class="mt-4 text-lg text-muted">
+            Od základov koučovacieho prístupu až po medzinárodnú certifikáciu ACC a PCC. Stupne na seba nadväzujú: CORE + 10
+            mentoringov = LEVEL 1, LEVEL 1 + 5 dní = LEVEL 2.
+          </p>
+        </div>
+        <a href={url('/vycviky')} class="btn-secondary self-start md:self-auto">Porovnať výcviky</a>
+      </div>
+      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {courses.map((course) => <CourseCard course={course} />)}
+      </div>
+    </div>
+  </section>
+
+  <BookPromo />
+
+  <!-- Audiences -->
+  <section class="section bg-sand-100/60" aria-labelledby="pre-koho">
+    <div class="container-page">
+      <div class="max-w-2xl">
+        <p class="eyebrow">Naše služby</p>
+        <h2 id="pre-koho" class="mt-3 text-4xl font-semibold md:text-5xl">S kým pracujeme</h2>
+      </div>
+      <div class="mt-12 grid gap-6 md:grid-cols-3">
+        {
+          audiences.map((a) => (
+            <article class="card group relative p-8">
+              <Image src={a.icon} alt="" width={72} height={72} class="size-16 object-contain" />
+              <h3 class="mt-6 text-2xl font-semibold">{a.title}</h3>
+              <p class="mt-3 text-muted">{a.text}</p>
+              <a href={url(a.href)} class="mt-6 inline-flex items-center gap-1.5 font-semibold text-brand-900 after:absolute after:inset-0">
+                {a.link}
+                <Icon name="arrow-right" class="size-4 transition-transform group-hover:translate-x-1" />
+              </a>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="section" aria-labelledby="referencie">
+    <div class="container-page">
+      <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div class="max-w-2xl">
+          <p class="eyebrow">Referencie</p>
+          <h2 id="referencie" class="mt-3 text-4xl font-semibold md:text-5xl">Čo hovoria klienti a absolventi</h2>
+        </div>
+        <a href={url('/o-mne#referencie')} class="btn-secondary self-start md:self-auto">Všetky referencie</a>
+      </div>
+      <div class="mt-12 columns-1 gap-6 md:columns-2 lg:columns-3 [&>*]:mb-6">
+        {testimonials.map((t) => <TestimonialCard testimonial={t} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- Podcast -->
+  <section class="section pt-0" aria-labelledby="podcast">
+    <div class="container-page">
+      <div class="grid gap-8 rounded-[2rem] bg-brand-950 p-8 text-brand-100 md:grid-cols-[1fr_auto] md:items-center md:p-12">
+        <div class="max-w-2xl">
+          <p class="text-sm font-semibold tracking-[0.14em] text-brand-300 uppercase">Podcast · viac ako 100 epizód</p>
+          <h2 id="podcast" class="mt-3 text-3xl font-semibold text-white md:text-4xl">O témach, ktoré sa ľudia často boja pomenovať nahlas</h2>
+          <p class="mt-4 text-lg">
+            Prežívanie, konflikty, vzťahy, osobný rast, tlak na výkon. Podcast pre osobnostný rast a vzdelávanie, plný princípu
+            polarít.
+          </p>
+        </div>
+        <div class="flex flex-col gap-3 sm:flex-row md:flex-col">
+          <a href={url('/podcast')} class="btn-light"><Icon name="play" class="size-4" />Počúvať podcast</a>
+          <a href={site.social.spotify} target="_blank" rel="noopener" class="btn-outline-light">
+            <Icon name="spotify" class="size-4" />Otvoriť v Spotify
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaBanner />
+</BaseLayout>

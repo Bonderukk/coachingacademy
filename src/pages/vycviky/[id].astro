@@ -1,0 +1,185 @@
+---
+import { url } from '../../lib/url';
+import { Image } from 'astro:assets';
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CourseCard from '../../components/CourseCard.astro';
+import TestimonialCard from '../../components/TestimonialCard.astro';
+import CtaBanner from '../../components/CtaBanner.astro';
+import Icon from '../../components/Icon.astro';
+import daliborPhoto from '../../assets/people/dalibor.jpg';
+import helenaPhoto from '../../assets/people/helena.jpg';
+import { site } from '../../config/site';
+import { breadcrumbs, course as courseSchema } from '../../lib/schema';
+
+export async function getStaticPaths() {
+  const courses = await getCollection('vycviky');
+  return courses.map((course) => ({ params: { id: course.id }, props: { course } }));
+}
+
+const { course } = Astro.props;
+const { Content } = await render(course);
+const data = course.data;
+
+const others = (await getCollection('vycviky')).filter((c) => c.id !== course.id).sort((a, b) => a.data.order - b.data.order);
+const testimonials = (await getCollection('referencie'))
+  .filter((t) => ['marcela-slimakova', 'michelle-krivda', 'radka-kralovicova'].includes(t.id));
+
+const signupHref = url(`/kontakt?tema=${encodeURIComponent(data.title)}#formular`);
+
+const lecturerBios: Record<string, { photo: ImageMetadata; bio: string }> = {
+  'Dalibor Bednařík': {
+    photo: daliborPhoto,
+    bio: 'Psychológ a profesionálny kouč ICF MCC, prvý slovenský externý ICF PCC kouč (2011). Od roku 2011 vedie 2× ročne vlastné výcviky postavené na princípoch polarít a systemiky. Kouč roka 2019.',
+  },
+  'Helena Bednařík Ballová': {
+    photo: helenaPhoto,
+    bio: 'Zakladateľka Inštitútu systemickej práce a konštelácií (iSPAK), pod ktorým organizuje a vedie tréningy systemického prístupu a konštelácií pre budúcich lektorov aj pre všetkých, ktorých táto metóda zaujíma.',
+  },
+};
+---
+
+<BaseLayout
+  title={data.metaTitle}
+  description={data.description}
+  jsonLd={[courseSchema(course), breadcrumbs([{ name: 'Výcviky', path: '/vycviky' }, { name: data.title, path: `/vycviky/${course.id}` }])]}
+>
+  <PageHero eyebrow={data.eyebrow} title={data.title} lead={data.summary} breadcrumbs={[{ label: 'Výcviky', href: '/vycviky' }, { label: data.title }]}>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a href={signupHref} class="btn-primary">Prihlásiť sa</a>
+      {data.schedules.length > 0 && <a href="#terminy" class="btn-secondary"><Icon name="calendar" class="size-4" />Termíny</a>}
+    </div>
+    {
+      data.badge ? (
+        <Image slot="aside" src={data.badge} alt={`Odznak ${data.title}`} width={240} height={240} class="hidden size-52 object-contain mix-blend-multiply md:block" priority />
+      ) : (
+        data.image && <Image slot="aside" src={data.image} alt="" width={320} height={320} fit="cover" class="hidden size-64 rounded-[2rem] object-cover md:block" priority />
+      )
+    }
+  </PageHero>
+
+  <!-- Key facts -->
+  <section class="border-b border-sand-200 bg-white" aria-label="Základné informácie">
+    <dl class="container-page grid gap-6 py-10 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        data.facts.map((fact) => (
+          <div>
+            <dt class="text-sm font-semibold tracking-[0.1em] text-brand-700 uppercase">{fact.label}</dt>
+            <dd class="mt-1.5 text-[16px] leading-snug">{fact.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <!-- Content + price box -->
+  <section class="section">
+    <div class="container-page grid gap-12 lg:grid-cols-[1fr_360px] lg:gap-16">
+      <article class="prose prose-lg prose-ca max-w-none">
+        <Content />
+      </article>
+
+      <aside class="lg:sticky lg:top-28 lg:self-start" aria-label="Cena a prihláška">
+        <div class="card p-7">
+          <h2 class="font-serif text-2xl font-semibold">Cena</h2>
+          <ul class="mt-5 space-y-5">
+            {
+              data.prices.map((price) => (
+                <li class="border-b border-sand-200 pb-5 last:border-0 last:pb-0">
+                  <p class="text-sm text-muted">{price.label}</p>
+                  <p class="mt-1 font-serif text-2xl font-semibold text-brand-950">{price.amount}</p>
+                  {price.note && <p class="text-sm text-muted">{price.note}</p>}
+                </li>
+              ))
+            }
+          </ul>
+          <a href={signupHref} class="btn-primary mt-7 w-full">Prihlásiť sa na výcvik</a>
+          <p class="mt-5 text-sm text-muted">
+            Máte otázku? Zavolajte na <a href={`tel:${site.phone.replace(/\s/g, '')}`} class="whitespace-nowrap text-brand-800 underline">{site.phone}</a>{' '}
+            alebo napíšte na <a href={`mailto:${site.email}`} class="text-brand-800 underline">{site.email}</a>.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Schedule -->
+  {
+    data.schedules.length > 0 && (
+      <section id="terminy" class="section scroll-mt-20 bg-sand-100/60" aria-labelledby="terminy-nadpis">
+        <div class="container-page">
+          <p class="eyebrow">Termíny</p>
+          <h2 id="terminy-nadpis" class="mt-3 text-4xl font-semibold md:text-5xl">Najbližšie termíny</h2>
+          <div class:list={['mt-10 grid gap-6', data.schedules.length > 1 && 'lg:grid-cols-2']}>
+            {data.schedules.map((schedule) => (
+              <div class="card p-7 md:p-9">
+                <h3 class="text-2xl font-semibold">{schedule.title}</h3>
+                <ol class="mt-6 divide-y divide-sand-200">
+                  {schedule.items.map((item) => (
+                    <li class="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
+                      <span class="font-medium">{item.name}</span>
+                      <span class="inline-flex shrink-0 items-center gap-2 text-muted sm:text-right">
+                        <Icon name="calendar" class="size-4 text-brand-700" />
+                        {item.date}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+                {schedule.note && <p class="mt-4 text-sm text-muted">{schedule.note}</p>}
+              </div>
+            ))}
+          </div>
+          <a href={signupHref} class="btn-primary mt-10">Prihlásiť sa</a>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- Lecturers -->
+  <section class="section" aria-labelledby="lektori">
+    <div class="container-page">
+      <p class="eyebrow">{data.lecturers.length > 1 ? 'Lektorský tím' : 'Lektor'}</p>
+      <h2 id="lektori" class="mt-3 text-4xl font-semibold md:text-5xl">Kto výcvik vedie</h2>
+      <div class="mt-10 grid gap-6 md:grid-cols-2">
+        {
+          data.lecturers.map((name) => {
+            const info = lecturerBios[name];
+            return (
+              <article class="card flex flex-col gap-6 p-7 sm:flex-row sm:items-start">
+                {info && <Image src={info.photo} alt={name} width={192} height={192} fit="cover" class="size-24 shrink-0 rounded-full object-cover" />}
+                <div>
+                  <h3 class="text-2xl font-semibold">{name}</h3>
+                  {info && <p class="mt-2 text-muted">{info.bio}</p>}
+                  {name === 'Dalibor Bednařík' && <a href={url('/o-mne')} class="mt-3 inline-flex items-center gap-1.5 font-semibold text-brand-900">Viac o mne <Icon name="arrow-right" class="size-4" /></a>}
+                </div>
+              </article>
+            );
+          })
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="section pt-0" aria-labelledby="skusenosti">
+    <div class="container-page">
+      <h2 id="skusenosti" class="text-3xl font-semibold md:text-4xl">Skúsenosti absolventov</h2>
+      <div class="mt-10 grid gap-6 md:grid-cols-3">
+        {testimonials.map((t) => <TestimonialCard testimonial={t} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- Other courses -->
+  <section class="section bg-sand-100/60" aria-labelledby="dalsie">
+    <div class="container-page">
+      <h2 id="dalsie" class="text-3xl font-semibold md:text-4xl">Ďalšie výcviky</h2>
+      <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {others.map((c) => <CourseCard course={c} />)}
+      </div>
+    </div>
+  </section>
+
+  <div class="pt-20 md:pt-28"><CtaBanner /></div>
+</BaseLayout>

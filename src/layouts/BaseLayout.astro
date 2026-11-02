@@ -1,0 +1,81 @@
+---
+import '../styles/global.css';
+import { Font } from 'astro:assets';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../config/site';
+import { cleanPath, url } from '../lib/url';
+
+interface Props {
+  /** Page title without the site name, e.g. "Kniha KOUČING". Omit on the homepage. */
+  title?: string;
+  /** Meta description – aim for 120–155 characters. */
+  description?: string;
+  /** Absolute or root-relative URL of the social share image (1200×630). */
+  image?: string;
+  type?: 'website' | 'article' | 'book' | 'product';
+  noindex?: boolean;
+  /** Structured data (schema.org) objects rendered as JSON-LD. */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  title,
+  description = site.description,
+  image = '/og-default.jpg',
+  type = 'website',
+  noindex = false,
+  jsonLd = [],
+} = Astro.props;
+
+const fullTitle = title ? `${title} | ${site.name}` : `${site.fullName} – ${site.name}`;
+const canonical = new URL(url(cleanPath(Astro.url.pathname)), Astro.site).href;
+const ogImage = new URL(url(image), Astro.site).href;
+const schemas = Array.isArray(jsonLd) ? jsonLd : [jsonLd];
+// Preview deploys (npm run build:preview) must not get indexed next to the live site.
+const hideFromSearch = noindex || import.meta.env.PUBLIC_NOINDEX === 'true';
+---
+
+<!doctype html>
+<html lang="sk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {hideFromSearch && <meta name="robots" content="noindex, follow" />}
+
+    <meta property="og:type" content={type === 'book' || type === 'product' ? 'product' : type} />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content={site.locale} />
+    <meta property="og:title" content={title ?? site.fullName} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" type="image/png" href={url('/favicon.png')} />
+    <link rel="apple-touch-icon" href={url('/apple-touch-icon.png')} />
+    <link rel="sitemap" href={url('/sitemap-index.xml')} />
+    <meta name="theme-color" content="#faf6f1" />
+
+    <Font cssVariable="--font-inter" preload={[{ style: 'normal' }]} />
+    <Font cssVariable="--font-fraunces" preload={[{ style: 'normal' }]} />
+
+    {schemas.map((schema) => <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />)}
+    <slot name="head" />
+  </head>
+  <body class="flex min-h-dvh flex-col">
+    <a
+      href="#obsah"
+      class="sr-only z-50 rounded-full bg-brand-900 px-5 py-3 text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+      >Preskočiť na obsah</a
+    >
+    <Header />
+    <main id="obsah" class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

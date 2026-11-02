@@ -1,0 +1,95 @@
+---
+import { url } from '../lib/url';
+// Mobile menu with the native Popover API: no JavaScript shipped.
+// The browser handles toggling, Esc / click-outside to close and the button's expanded state.
+import Icon from './Icon.astro';
+import type { NavItem } from '../config/site';
+
+interface Props {
+  items: NavItem[];
+  currentPath: string;
+}
+
+const { items, currentPath } = Astro.props;
+---
+
+<div class="mobile-nav lg:hidden">
+  <button
+    type="button"
+    popovertarget="mobile-menu"
+    class="inline-flex size-11 items-center justify-center rounded-full text-brand-950 hover:bg-brand-900/5"
+  >
+    <span class="sr-only">Menu</span>
+    <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
+      <path class="icon-open" d="M4 7h16M4 12h16M4 17h16"></path>
+      <path class="icon-close" d="M6 6l12 12M18 6 6 18"></path>
+    </svg>
+  </button>
+
+  <div
+    id="mobile-menu"
+    popover
+    class="top-18 right-0 bottom-0 left-0 m-0 h-auto max-h-none w-full max-w-none overflow-y-auto border-0 border-t border-sand-200 bg-cream px-4 pt-4 pb-10"
+  >
+    <nav aria-label="Mobilná navigácia">
+      <ul class="space-y-1">
+        {
+          items.map((item) =>
+            item.children ? (
+              <li>
+                <details class="group" open={currentPath.startsWith(item.href)}>
+                  <summary class="flex cursor-pointer list-none items-center justify-between rounded-2xl px-4 py-3.5 font-serif text-xl text-brand-950 hover:bg-white [&::-webkit-details-marker]:hidden">
+                    {item.label}
+                    <Icon name="chevron-down" class="size-5 transition-transform group-open:rotate-180" />
+                  </summary>
+                  <ul class="mt-1 mb-2 ml-4 space-y-0.5 border-l border-sand-300 pl-3">
+                    <li>
+                      <a href={url(item.href)} class="block rounded-xl px-3 py-2.5 font-medium text-brand-900">
+                        Prehľad – všetky {item.label.toLowerCase()}
+                      </a>
+                    </li>
+                    {item.children.map((child) => (
+                      <li>
+                        <a
+                          href={url(child.href)}
+                          aria-current={currentPath === child.href ? 'page' : undefined}
+                          class="block rounded-xl px-3 py-2.5 text-ink aria-[current=page]:bg-white aria-[current=page]:text-brand-900"
+                        >
+                          {child.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              </li>
+            ) : (
+              <li>
+                <a
+                  href={url(item.href)}
+                  aria-current={currentPath === item.href ? 'page' : undefined}
+                  class="block rounded-2xl px-4 py-3.5 font-serif text-xl text-brand-950 hover:bg-white aria-[current=page]:bg-white"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ),
+          )
+        }
+      </ul>
+    </nav>
+    <a href={url('/kontakt')} class="btn-primary mt-6 w-full">Kontakt</a>
+  </div>
+</div>
+
+<style>
+  .icon-close,
+  .mobile-nav:has(:popover-open) .icon-open {
+    display: none;
+  }
+  .mobile-nav:has(:popover-open) .icon-close {
+    display: inline;
+  }
+  #mobile-menu {
+    position: fixed;
+  }
+</style>

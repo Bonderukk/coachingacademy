@@ -1,0 +1,103 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  /* Burgundy from the Coaching Academy logo (#4a0f1c) */
+  --color-brand-50: #fcf4f6;
+  --color-brand-100: #f8e7eb;
+  --color-brand-200: #f0cdd5;
+  --color-brand-300: #e3a3b1;
+  --color-brand-400: #cf6f84;
+  --color-brand-500: #b5405a;
+  --color-brand-600: #9b2a42;
+  --color-brand-700: #7f1d32;
+  --color-brand-800: #651626;
+  --color-brand-900: #4a0f1c;
+  --color-brand-950: #2a0710;
+
+  --color-cream: #faf6f1;
+  --color-sand-100: #f3ece3;
+  --color-sand-200: #e8dccd;
+  --color-sand-300: #d6c4ae;
+  --color-gold: #c9a46a;
+
+  --color-ink: #1f1a1c;
+  --color-muted: #5f5558;
+}
+
+@theme inline {
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-fraunces);
+}
+
+@layer base {
+  html {
+    @apply scroll-smooth bg-cream text-ink antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply font-sans text-[17px] leading-relaxed;
+  }
+  h1, h2, h3, h4 {
+    @apply font-serif text-balance text-brand-950;
+    font-optical-sizing: auto;
+  }
+  ::selection {
+    @apply bg-brand-200 text-brand-950;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand-700;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+  }
+  .section {
+    @apply py-20 md:py-28;
+  }
+  .eyebrow {
+    @apply text-sm font-semibold tracking-[0.14em] text-brand-700 uppercase;
+  }
+  .btn-primary,
+  .btn-secondary,
+  .btn-light,
+  .btn-outline-light {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-[15px] font-semibold transition-colors duration-200;
+  }
+  .btn-primary {
+    @apply bg-brand-900 text-white hover:bg-brand-800;
+  }
+  .btn-secondary {
+    @apply border border-brand-900/25 text-brand-900 hover:border-brand-900 hover:bg-brand-900/5;
+  }
+  .btn-light {
+    @apply bg-white text-brand-900 hover:bg-brand-50;
+  }
+  .btn-outline-light {
+    @apply border border-white/25 text-white hover:bg-white/10;
+  }
+  .card {
+    @apply rounded-3xl border border-sand-200 bg-white;
+  }
+}
+
+/* Long-form text (course details, legal pages). Use together with `prose prose-lg max-w-none`.
+   Unlayered on purpose: the typography plugin's `.prose` lives in the utilities layer and would win otherwise. */
+.prose-ca {
+  --tw-prose-body: var(--color-ink);
+  --tw-prose-headings: var(--color-brand-950);
+  --tw-prose-links: var(--color-brand-800);
+  --tw-prose-bold: var(--color-brand-950);
+  --tw-prose-bullets: var(--color-brand-400);
+  --tw-prose-counters: var(--color-brand-700);
+  --tw-prose-quotes: var(--color-brand-900);
+  --tw-prose-quote-borders: var(--color-brand-300);
+  --tw-prose-hr: var(--color-sand-200);
+  --tw-prose-th-borders: var(--color-sand-300);
+  --tw-prose-td-borders: var(--color-sand-200);
+}
+.prose-ca :where(h2, h3) {
+  @apply font-serif font-semibold;
+}

@@ -1,0 +1,57 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import ContactForm from '../components/ContactForm';
+import Icon from '../components/Icon.astro';
+import { site } from '../config/site';
+import { breadcrumbs } from '../lib/schema';
+
+const courses = (await getCollection('vycviky')).sort((a, b) => a.data.order - b.data.order);
+const services = (await getCollection('sluzby')).sort((a, b) => a.data.order - b.data.order);
+const topics = [...courses, ...services].map((entry) => entry.data.title).concat('Kniha KOUČING');
+const { company } = site;
+---
+
+<BaseLayout
+  title="Kontakt"
+  description="Kontaktujte Coaching Academy – prihlášky na koučovacie výcviky, objednávky koučingu a otázky. E-mail dalibor@coachingacademy.sk, tel. +421 902 637 327."
+  jsonLd={breadcrumbs([{ name: 'Kontakt', path: '/kontakt' }])}
+>
+  <PageHero eyebrow="Kontakt" title="Napíšte nám" lead="Váš podnet, záujem alebo otázku nám pošlite cez formulár, e-mailom či telefonicky. Ozveme sa vám." breadcrumbs={[{ label: 'Kontakt' }]} />
+
+  <section class="section">
+    <div class="container-page grid gap-14 lg:grid-cols-[1fr_340px]">
+      <div id="formular" class="scroll-mt-28">
+        <h2 class="sr-only">Kontaktný formulár</h2>
+        <ContactForm client:load endpoint={site.formEndpoint} email={site.email} topics={topics} />
+      </div>
+
+      <aside class="space-y-4" aria-label="Kontaktné údaje">
+        <a href={`mailto:${site.email}`} class="card flex items-center gap-4 p-6 transition-colors hover:border-brand-300">
+          <span class="flex size-11 items-center justify-center rounded-full bg-brand-50 text-brand-900"><Icon name="mail" /></span>
+          <span>
+            <span class="block text-sm text-muted">E-mail</span>
+            <span class="block font-semibold text-brand-950">{site.email}</span>
+          </span>
+        </a>
+        <a href={`tel:${site.phone.replace(/\s/g, '')}`} class="card flex items-center gap-4 p-6 transition-colors hover:border-brand-300">
+          <span class="flex size-11 items-center justify-center rounded-full bg-brand-50 text-brand-900"><Icon name="phone" /></span>
+          <span>
+            <span class="block text-sm text-muted">Telefón</span>
+            <span class="block font-semibold text-brand-950">{site.phone}</span>
+          </span>
+        </a>
+        <div class="card flex items-start gap-4 p-6">
+          <span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-900"><Icon name="pin" /></span>
+          <address class="text-[15px] not-italic">
+            <span class="block text-sm text-muted">Fakturačné údaje</span>
+            <span class="mt-1 block font-semibold text-brand-950">{company.name}</span>
+            {company.street}, {company.zip} {company.city}<br />
+            IČO: {company.ico}
+          </address>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>

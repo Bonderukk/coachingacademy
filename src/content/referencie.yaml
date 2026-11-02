@@ -1,0 +1,72 @@
+# Referencie klientov a absolventov. `featured: true` = zobrazí sa na úvodnej stránke.
+- id: milan-murcko
+  name: Milan Murcko
+  role: ex CEO, YIT Slovakia
+  photo: ../assets/testimonials/milan-murcko.jpg
+  featured: true
+  quote: Na takmer každý problém, ktorý vás trápi, poznáte riešenie. Ak neveríte, nechajte Dalibora, aby vám položil otázku.
+
+- id: patrik-golsky
+  name: Patrik Golský
+  role: CEO a ex výrobný riaditeľ, YIT Slovakia
+  photo: ../assets/testimonials/patrik-golsky.jpg
+  featured: true
+  quote: Napriek počiatočným pochybnostiam voči koučingu mi stretnutia s Daliborom otvorili oči a posunuli ma vpred po pracovnej aj po ľudskej stránke. Uvedomil som si veľa vecí.
+
+- id: jana-langerova
+  name: Jana Langerová
+  role: Riaditeľka odboru finančného riadenia NBS
+  photo: ../assets/testimonials/jana-langerova.jpg
+  featured: true
+  quote: Pre mňa je Dalibor skúsený psychológ a kouč, ktorý ma previedol dôležitými zmenami v kariére s nadobúdaním skúseností pri vedení ľudí, pri práci v top manažmente. Hodnotou bolo sprevádzanie krízového manažmentu a cez revitalizáciu spoločnosti, obrovská pridaná hodnota bola nadhľad pre organizačné a strategické zmeny.
+
+- id: barbora-kubikova
+  name: Barbora Kubíková
+  role: Head of Accounting, Covestro Netherlands
+  photo: ../assets/testimonials/barbora-kubikova.jpg
+  quote: Koučing s Daliborom mi pomáha orientovať sa na mojej personálnej mape, zorientovať sa v živote, správne nasmerováva.
+
+- id: marcela-slimakova
+  name: Marcela Slimáková
+  role: Organisational Development Officer, Zurich Insurance
+  photo: ../assets/testimonials/marcela-slimakova.jpg
+  featured: true
+  quote: Absolvovala som výcvik integratívneho koučingu u Dalibora. Jeho skúsenosť, osobný prístup, unikátny vzhľad a neuveriteľný cit a vnímanie situácií urobili čas strávený na výcviku a aj následne nezabudnuteľným. Nielenže som si poriešila vlastné osobné a pracovné témy, odniesla som si zručnosti a techniky do koučingovej a vzdelávacej praxe. Vytvoril sa aj kolektív, ktorý naďalej udržiava kontakt. Pokračujem vo výcviku u Dalibora s veľkou určitosťou.
+
+- id: anna-chelemendikova
+  name: Anna Chelemendikova
+  role: prekladateľka, fotografka, koučka
+  photo: ../assets/testimonials/anna-chelemendikova.jpg
+  quote: Koučovací výcvik hodnotím ako praktické a kvalitné vzdelanie s veľkým presahom nielen do profesného, ale aj do každodenného života. Koučovanie sme trénovali už od prvého modulu a na výcviku panovala priateľská a uvoľnená atmosféra. Veľmi oceňujem zdieľanie skúseností z praxe a množstvo spätnej väzby, a to aj vo forme online mentoringov. Dalibor robí svoju prácu srdcom a na jeho výcviky zjavne chodia podobne naladení ľudia, pretože som tam spoznala partiu skvelých kolegov, s ktorými sme stále v kontakte.
+
+- id: monika-kadekova
+  name: Monika Kádeková
+  role: momentálne nezamestnaná, na voľnej nohe, teda dvoch
+  photo: ../assets/testimonials/monika-kadekova.jpg
+  quote: Prečo Dalibor? Pre stretnutie človeka s človekom so skúsenosťami preverenými životom. Ďakujem za poznanie, ktoré s nami zdieľaš.
+
+- id: andrea-travnickova
+  name: Andrea Trávničková
+  role: Koučka, team leader pre eventy
+  photo: ../assets/testimonials/andrea-travnickova.jpg
+  quote: U Dalibora som našla výnimočnú kombináciu absolútnej profesionality, zrozumiteľnosti, otvorenej komunikácie a vzácnej ľudskosti, človečiny. Výcvik ma posunul nielen v profesionálnej oblasti, ale podporil ma aj ako človeka. Už dnes viem, že u Dalibora budem vo výcvikoch pokračovať. Jeho autenticita, odbornosť a tiež zmysel pre humor robia z výcviku zážitok, ku ktorému sa jednoducho chcete vrátiť. Ďakujem, Dalibor.
+
+- id: michelle-krivda
+  name: Michelle Krivda
+  role: Head of People, Refresher
+  photo: ../assets/testimonials/michelle-krivda.jpg
+  featured: true
+  quote: Daliborova odbornosť je taká komplexná, že ďaleko presahuje level základného ICF coaching výcviku. Miera, akou kombinuje odborné poznatky a vlastné skúsenosti, je inšpirujúca. Výcvik ma pod jeho vedením nielen odborne, ale aj ľudsky veľmi posunul a okrem toho to bola aj skvelá výzva a zábava. S jeho kľúčovými princípmi pracujem vo svojej profesii takmer denne. Ďakujem za túto skúsenosť!
+
+- id: radka-kralovicova
+  name: Radka Královičová
+  role: Talent Acquisition Manager, Deloitte Czech Republic
+  photo: ../assets/testimonials/radka-kralovicova.jpg
+  featured: true
+  quote: Koučovací výcvik s Daliborom je majstrovstvo. Vďaka vzájomnej spolupráci som dosiahla niekoľko kľúčových pokrokov v mojej kariére. Jeho odborné znalosti a schopnosť klásť silné otázky mi pomohli veľmi konkrétne sa lepšie zorientovať v komplexných pracovných aj osobných témach a výrazne sa posunúť k mojim stanoveným cieľom. S potešením odporúčam Dalibora ako skúseného psychológa a kouča.
+
+- id: silvia-doncevova
+  name: Silvia Dončevová
+  role: supervízorka, mediátorka a koučka, vysokoškolská pedagogička na FiF UK
+  photo: ../assets/testimonials/silvia-doncevova.jpg
+  quote: Koučingový výcvik v Coaching Academy je výnimočná príležitosť na získanie nielen nových zručností a poznatkov, ale aj skvelých priateľov.

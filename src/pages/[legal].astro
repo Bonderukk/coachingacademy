@@ -1,0 +1,25 @@
+---
+// Legal pages from src/content/pravne: /gdpr, /vop
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pravne');
+  return pages.map((page) => ({ params: { legal: page.id }, props: { page } }));
+}
+
+const { page } = Astro.props;
+const { Content } = await render(page);
+---
+
+<BaseLayout title={page.data.title} description={page.data.description}>
+  <PageHero title={page.data.title} breadcrumbs={[{ label: page.data.title }]} />
+  <section class="section">
+    <div class="container-page">
+      <article class="prose prose-lg prose-ca mx-auto max-w-3xl">
+        <Content />
+      </article>
+    </div>
+  </section>
+</BaseLayout>

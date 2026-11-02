@@ -1,0 +1,116 @@
+---
+import { url } from '../lib/url';
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TestimonialCard from '../components/TestimonialCard.astro';
+import CtaBanner from '../components/CtaBanner.astro';
+import portrait from '../assets/people/dalibor-okno.jpg';
+import badgeMcc from '../assets/badges/icf-mcc.png';
+import badgeMember from '../assets/badges/icf-member.png';
+import badgeLevel1 from '../assets/badges/icf-level-1.png';
+import badgeLevel2 from '../assets/badges/icf-level-2.png';
+import { breadcrumbs, dalibor } from '../lib/schema';
+
+const testimonials = await getCollection('referencie');
+
+const highlights = [
+  { title: 'Kouč roka 2019', text: 'Víťaz odbornej ankety' },
+  { title: 'ICF MCC', text: 'Prvý externý certifikovaný ICF PCC kouč na Slovensku (2011), dnes Master Certified Coach' },
+  { title: 'Autor a lektor', text: 'Medzinárodne akreditovaného kurzu koučov ICF LEVEL 1' },
+  { title: 'Psychológ', text: 'Člen Slovenskej komory psychológov, absolvent psychoterapeutického výcviku' },
+];
+
+const badges = [
+  { src: badgeMcc, alt: 'ICF Master Certified Coach' },
+  { src: badgeMember, alt: 'Člen International Coaching Federation' },
+  { src: badgeLevel1, alt: 'ICF Level 1 akreditované vzdelávanie' },
+  { src: badgeLevel2, alt: 'ICF Level 2 akreditované vzdelávanie' },
+];
+---
+
+<BaseLayout
+  title="Dalibor Bednařík – psychológ a kouč ICF MCC"
+  description="Dalibor Bednařík – psychológ, kouč ICF MCC, zakladateľ Coaching Academy (2006) a Kouč roka 2019. Viac ako 2 500 hodín koučingu na Slovensku a v Česku."
+  jsonLd={[{ '@context': 'https://schema.org', ...dalibor }, breadcrumbs([{ name: 'O mne', path: '/o-mne' }])]}
+>
+  <section class="overflow-hidden bg-sand-100/60">
+    <div class="container-page grid items-center gap-12 py-14 md:py-20 lg:grid-cols-2">
+      <div>
+        <nav aria-label="Omrvinková navigácia" class="mb-6 text-sm text-muted">
+          <a href={url('/')} class="hover:text-brand-900">Domov</a> <span aria-hidden="true">/</span> <span aria-current="page" class="text-ink">O mne</span>
+        </nav>
+        <p class="eyebrow">O mne</p>
+        <h1 class="mt-3 text-5xl leading-[1.05] font-semibold md:text-6xl">Dalibor Bednařík</h1>
+        <p class="mt-6 text-xl leading-relaxed text-muted">
+          Volám sa Dalibor Bednařík a v roku 2006 som založil Coaching Academy. Výcviky koučingu vediem od roku 2011 a od roku
+          2015 poskytujeme medzinárodne ICF akreditované kurzy koučingu, ktoré sú uznávané na svetovej úrovni.
+        </p>
+      </div>
+      <Image
+        src={portrait}
+        alt="Dalibor Bednařík pri okne"
+        widths={[600, 900, 1300]}
+        sizes="(min-width: 1024px) 50vw, 100vw"
+        priority
+        class="aspect-[4/3] w-full rounded-[2rem] object-cover"
+      />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page grid gap-14 lg:grid-cols-[1fr_380px]">
+      <div class="prose prose-lg prose-ca max-w-none">
+        <p>
+          Vzdelaním som psychológ, absolvoval som psychoterapeutický výcvik a som celosvetovo certifikovaný kouč – absolvent
+          najväčšej svetovej koučovacej školy, kanadskej Erickson College. V koučovaní sa priebežne neustále vzdelávam. Téme
+          koučingu, mentoringu a psychológii sa venujem celý svoj profesný život.
+        </p>
+        <p>
+          Od roku 2003 mám odkoučovaných viac ako <strong>2 500 hodín</strong> v Českej a Slovenskej republike. V mnohých firmách
+          som pomohol stovkám top manažérov, vyšším riadiacim pracovníkom, manažérom a špecialistom.
+        </p>
+        <p>
+          Okrem individuálneho koučingu vediem aj tímový koučing, mentoring a workshopy zamerané na rozvoj leadershipu, iniciáciu
+          a vedenie zmien, strategické riešenia konfliktov a firemnú kultúru. Vediem celosvetovo certifikované výcviky v koučingu
+          a v koučovacom prístupe pre manažérov, koučov, poradcov a konzultantov – a v neposlednom rade pre ľudí, ktorí to majú
+          ako vlastný rozvoj.
+        </p>
+        <p>
+          Do svojej práce neustále aplikujem inovatívne prístupy, ktorých inšpirácie čerpám od ľudí z praxe, z vedy, prírody,
+          kultúry, filozofie a histórie. Pomohol som mnohým firmám aj jednotlivcom na ceste osobnostného a skupinového rozvoja
+          vo všetkých sektoroch. Dôkazom je rast ich biznisu a spokojnosť zamestnancov.
+        </p>
+        <blockquote>
+          <p>Nie je jednoduché zosúladiť tlak vonkajších očakávaní a vnútorných potrieb. No stojí za to do toho investovať.</p>
+        </blockquote>
+      </div>
+
+      <aside class="space-y-4" aria-label="Ocenenia a certifikácie">
+        {
+          highlights.map((h) => (
+            <div class="card p-6">
+              <p class="font-serif text-2xl font-semibold text-brand-900">{h.title}</p>
+              <p class="mt-1 text-[15px] text-muted">{h.text}</p>
+            </div>
+          ))
+        }
+        <ul class="flex flex-wrap gap-3 pt-2">
+          {badges.map((b) => <li><Image src={b.src} alt={b.alt} width={128} height={128} class="size-16 object-contain mix-blend-multiply" /></li>)}
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  <section id="referencie" class="section scroll-mt-20 bg-sand-100/60" aria-labelledby="referencie-nadpis">
+    <div class="container-page">
+      <p class="eyebrow">Povedali o mne</p>
+      <h2 id="referencie-nadpis" class="mt-3 text-4xl font-semibold md:text-5xl">Referencie</h2>
+      <div class="mt-12 columns-1 gap-6 md:columns-2 lg:columns-3 [&>*]:mb-6">
+        {testimonials.map((t) => <TestimonialCard testimonial={t} />)}
+      </div>
+    </div>
+  </section>
+
+  <div class="pt-20 md:pt-28"><CtaBanner title="Chcete sa porozprávať o spolupráci?" text="Individuálny koučing, výcvik alebo program pre vašu firmu – ozvite sa." /></div>
+</BaseLayout>

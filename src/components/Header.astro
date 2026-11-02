@@ -1,0 +1,77 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/logo-mark.png';
+import Icon from './Icon.astro';
+import MobileNav from './MobileNav.astro';
+import { nav } from '../config/site';
+import { cleanPath, url } from '../lib/url';
+
+const path = cleanPath(Astro.url.pathname);
+const isActive = (href: string) => path === href || path.startsWith(href + '/');
+const linkBase = 'rounded-full px-3.5 py-2 text-[15px] font-medium transition-colors hover:bg-brand-900/5 hover:text-brand-900';
+---
+
+<header class="sticky top-0 z-40 border-b border-sand-200/70 bg-cream/85 backdrop-blur-md">
+  <div class="container-page flex h-18 items-center justify-between gap-6">
+    <a href={url('/')} class="flex shrink-0 items-center gap-3" aria-label="Coaching Academy – úvodná stránka">
+      <Image src={logo} alt="" width={30} height={40} class="h-10 w-auto" priority />
+      <span class="leading-tight">
+        <span class="block font-serif text-[19px] font-semibold text-brand-950">Dalibor Bednařík</span>
+        <span class="block text-[11px] tracking-[0.2em] text-muted uppercase">Coaching Academy</span>
+      </span>
+    </a>
+
+    <nav aria-label="Hlavná navigácia" class="hidden lg:block">
+      <ul class="flex items-center gap-0.5">
+        {
+          nav.map((item) =>
+            item.children ? (
+              <li class="group relative">
+                <a
+                  href={url(item.href)}
+                  class:list={[linkBase, 'inline-flex items-center gap-1', isActive(item.href) && 'text-brand-900']}
+                  aria-current={isActive(item.href) ? 'page' : undefined}
+                >
+                  {item.label}
+                  <Icon name="chevron-down" class="size-4 transition-transform group-hover:rotate-180" />
+                </a>
+                <div class="invisible absolute top-full left-0 pt-3 opacity-0 transition duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+                  <ul class="w-80 rounded-2xl border border-sand-200 bg-white p-2 shadow-xl shadow-brand-950/5">
+                    {item.children.map((child) => (
+                      <li>
+                        <a
+                          href={url(child.href)}
+                          class:list={[
+                            'block rounded-xl px-4 py-2.5 text-[15px] transition-colors hover:bg-brand-50 hover:text-brand-900',
+                            path === child.href && 'bg-brand-50 text-brand-900',
+                          ]}
+                        >
+                          {child.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            ) : (
+              <li>
+                <a
+                  href={url(item.href)}
+                  class:list={[linkBase, isActive(item.href) && 'text-brand-900']}
+                  aria-current={isActive(item.href) ? 'page' : undefined}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ),
+          )
+        }
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href={url('/kontakt')} class="btn-primary hidden py-2.5 lg:inline-flex">Kontakt</a>
+      <MobileNav items={nav} currentPath={path} />
+    </div>
+  </div>
+</header>

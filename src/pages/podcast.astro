@@ -1,0 +1,67 @@
+---
+import { url } from '../lib/url';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import SpotifyEmbed from '../components/SpotifyEmbed';
+import Icon from '../components/Icon.astro';
+import { site } from '../config/site';
+import { breadcrumbs } from '../lib/schema';
+
+const topics = ['prežívanie', 'konflikty', 'vzťahy', 'osobný rast', 'tlak na výkon', 'polarity', 'koučing'];
+---
+
+<BaseLayout
+  title="Podcast o koučingu a osobnom raste"
+  description="Viac ako 100 epizód podcastu Dalibora Bednaříka o koučingu, vzťahoch, konfliktoch, osobnom raste a tlaku na výkon. Počúvajte na Spotify."
+  jsonLd={[
+    {
+      '@context': 'https://schema.org',
+      '@type': 'PodcastSeries',
+      name: 'Podcast Dalibora Bednaříka',
+      url: new URL('/podcast', site.url).href,
+      sameAs: [site.social.spotify],
+      inLanguage: 'sk',
+      author: { '@type': 'Person', name: 'Dalibor Bednařík' },
+    },
+    breadcrumbs([{ name: 'Podcast', path: '/podcast' }]),
+  ]}
+>
+  <PageHero
+    eyebrow="Podcast · viac ako 100 epizód"
+    title="O témach, ktoré sa ľudia boja pomenovať nahlas"
+    lead="Podcast pre osobnostný rast, vzdelávanie a energiu – poskytuje odpovede, vyvoláva otázky a je plný princípu polarít."
+    breadcrumbs={[{ label: 'Podcast' }]}
+  >
+    <ul class="mt-8 flex flex-wrap gap-2">
+      {topics.map((t) => <li class="rounded-full border border-sand-300 bg-white px-4 py-1.5 text-sm">{t}</li>)}
+    </ul>
+  </PageHero>
+
+  <section class="section">
+    <div class="container-page grid gap-12 lg:grid-cols-[1fr_340px]">
+      <SpotifyEmbed client:visible src={site.podcast.spotifyEmbed} title="Podcast Dalibora Bednaříka na Spotify" />
+      <aside class="space-y-4">
+        <div class="card p-7">
+          <h2 class="font-serif text-2xl font-semibold">Kde počúvať</h2>
+          <ul class="mt-5 space-y-3">
+            <li>
+              <a href={site.social.spotify} target="_blank" rel="noopener" class="flex items-center gap-3 font-medium text-brand-900 hover:underline">
+                <Icon name="spotify" class="size-6 text-[#1db954]" />Spotify
+              </a>
+            </li>
+            <li>
+              <a href={site.social.youtube} target="_blank" rel="noopener" class="flex items-center gap-3 font-medium text-brand-900 hover:underline">
+                <Icon name="youtube" class="size-6 text-[#ff0033]" />YouTube
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="card p-7">
+          <h2 class="font-serif text-2xl font-semibold">Kniha KOUČING</h2>
+          <p class="mt-2 text-[15px] text-muted">Princíp polarít a GROW model v knihe – praktický sprievodca koučovaním.</p>
+          <a href={url('/kniha')} class="mt-4 inline-flex items-center gap-1.5 font-semibold text-brand-900">O knihe <Icon name="arrow-right" class="size-4" /></a>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>

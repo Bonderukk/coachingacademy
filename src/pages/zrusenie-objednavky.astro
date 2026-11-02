@@ -1,0 +1,25 @@
+---
+import { url } from '../lib/url';
+// Online withdrawal function for distance contracts (replaces the Websupport "Zrušenie objednávky" page).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import ContactForm from '../components/ContactForm';
+import { site } from '../config/site';
+---
+
+<BaseLayout title="Odstúpenie od zmluvy" description="Formulár na odstúpenie od zmluvy uzavretej na diaľku – kniha alebo služby Coaching Academy s.r.o." noindex>
+  <PageHero
+    title="Odstúpenie od zmluvy"
+    lead="Tento formulár použite na odstúpenie od zmluvy počas lehoty na rozmyslenie. Prijatie vášho odstúpenia vám potvrdíme e-mailom spolu s ďalšími krokmi, vrátane pokynov na vrátenie tovaru."
+    breadcrumbs={[{ label: 'Odstúpenie od zmluvy' }]}
+  />
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <ContactForm client:load variant="withdrawal" endpoint={site.formEndpoint} email={site.email} />
+      <p class="mt-10 text-sm text-muted">
+        Podrobnosti nájdete vo <a href={url('/vop')} class="text-brand-800 underline">všeobecných obchodných podmienkach</a>. Odstúpenie môžete
+        poslať aj e-mailom na <a href={`mailto:${site.email}`} class="text-brand-800 underline">{site.email}</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

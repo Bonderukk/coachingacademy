@@ -1,0 +1,40 @@
+---
+import { url } from '../lib/url';
+import { Image } from 'astro:assets';
+import bookImage from '../assets/book/kniha-mockup.jpg';
+import BuyBookButton from './BuyBookButton.astro';
+import Icon from './Icon.astro';
+import { book, formatPrice } from '../config/site';
+---
+
+<section class="pb-20 md:pb-28" aria-labelledby="kniha-promo">
+  <div class="container-page">
+    <div class="grid items-center overflow-hidden rounded-[2rem] bg-brand-900 text-brand-100 md:grid-cols-2">
+      <div class="relative h-full bg-sand-100">
+        <Image
+          src={bookImage}
+          alt="Kniha KOUČING – Polarity pre šťastný život a úspech v práci"
+          widths={[480, 800, 1100]}
+          sizes="(min-width: 768px) 50vw, 100vw"
+          class="size-full object-cover"
+        />
+      </div>
+      <div class="p-8 md:p-12 lg:p-16">
+        {book.preorder && <p class="inline-flex rounded-full bg-white/10 px-3.5 py-1.5 text-sm font-semibold text-white">Predpredaj · vychádza {book.releaseLabel}</p>}
+        <h2 id="kniha-promo" class="mt-5 text-4xl leading-tight text-white md:text-5xl">{book.shortTitle}</h2>
+        <p class="mt-2 font-serif text-xl text-brand-200 italic">Polarity pre šťastný život a úspech v práci</p>
+        <p class="mt-6 text-[17px] leading-relaxed">
+          Viac ako 22 rokov skúseností z koučingu, základy výcviku Business & Life Coaching CORE a LEVEL 1 a mnoho situácií z
+          koučovacej praxe. Praktický a zážitkový sprievodca svetom koučovania.
+        </p>
+        <div class="mt-8 flex flex-wrap items-center gap-4">
+          <BuyBookButton variant="light" />
+          <a href={url('/kniha')} class="inline-flex items-center gap-1.5 font-semibold text-white hover:underline">
+            O knihe <Icon name="arrow-right" class="size-4" />
+          </a>
+        </div>
+        <p class="mt-4 text-sm text-brand-200">{formatPrice(book.price)} + poštovné {formatPrice(book.shipping)}</p>
+      </div>
+    </div>
+  </div>
+</section>
