@@ -1,7 +1,7 @@
 ---
 import { url } from '../lib/url';
 import { Image } from 'astro:assets';
-import logo from '../assets/brand/logo-mark.png';
+import logo from '../assets/brand/logo-horizontal-white.png';
 import Icon from './Icon.astro';
 import { nav, site } from '../config/site';
 
@@ -19,12 +19,8 @@ const social = [
 <footer class="mt-auto bg-brand-950 text-brand-100/80">
   <div class="container-page grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
     <div>
-      <a href={url('/')} class="inline-flex items-center gap-3">
-        <span class="rounded-xl bg-cream p-2"><Image src={logo} alt="" width={24} height={32} class="h-8 w-auto" /></span>
-        <span class="leading-tight">
-          <span class="block font-serif text-lg text-white">Dalibor Bednařík</span>
-          <span class="block text-[11px] tracking-[0.2em] uppercase">Coaching Academy</span>
-        </span>
+      <a href={url('/')} class="inline-block">
+        <Image src={logo} alt="Dalibor Bednařík Coaching Academy" width={186} height={52} densities={[1, 2, 3]} class="h-13 w-auto" />
       </a>
       <p class="mt-5 max-w-xs text-[15px]">
         Koučingová akadémia od roku 2006. Medzinárodne ICF akreditované výcviky od roku 2015.

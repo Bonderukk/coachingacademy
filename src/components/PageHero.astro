@@ -10,7 +10,8 @@ interface Props {
 const { title, eyebrow, lead, breadcrumbs = [] } = Astro.props;
 ---
 
-<section class="border-b border-sand-200 bg-sand-100/60">
+<section class="relative isolate overflow-hidden border-b border-sand-200 bg-sand-100/60">
+  <div aria-hidden="true" class="pointer-events-none absolute -top-24 -right-20 -z-10 size-96 rounded-full bg-brand-200/40 blur-3xl motion-safe:animate-drift"></div>
   <div class="container-page py-14 md:py-20">
     {
       breadcrumbs.length > 0 && (
@@ -29,12 +30,14 @@ const { title, eyebrow, lead, breadcrumbs = [] } = Astro.props;
     }
     <div class="grid items-center gap-10 md:grid-cols-[1fr_auto]">
       <div class="max-w-3xl">
-        {eyebrow && <p class="eyebrow">{eyebrow}</p>}
-        <h1 class="mt-3 text-4xl leading-[1.1] font-semibold md:text-5xl lg:text-6xl">{title}</h1>
-        {lead && <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted md:text-xl">{lead}</p>}
-        <slot />
+        {eyebrow && <p class="eyebrow motion-safe:animate-fade-up">{eyebrow}</p>}
+        <h1 class="mt-3 text-4xl leading-[1.1] font-semibold motion-safe:animate-fade-up motion-safe:[animation-delay:80ms] md:text-5xl lg:text-6xl">
+          {title}
+        </h1>
+        {lead && <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted motion-safe:animate-fade-up motion-safe:[animation-delay:160ms] md:text-xl">{lead}</p>}
+        <div class="motion-safe:animate-fade-up motion-safe:[animation-delay:240ms]"><slot /></div>
       </div>
-      <slot name="aside" />
+      <div class="motion-safe:animate-fade-in motion-safe:[animation-delay:200ms]"><slot name="aside" /></div>
     </div>
   </div>
 </section>

@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import logo from '../assets/brand/logo-mark.png';
+import logo from '../assets/brand/logo-horizontal.png';
 import Icon from './Icon.astro';
 import MobileNav from './MobileNav.astro';
 import { nav } from '../config/site';
@@ -13,12 +13,16 @@ const linkBase = 'rounded-full px-3.5 py-2 text-[15px] font-medium transition-co
 
 <header class="sticky top-0 z-40 border-b border-sand-200/70 bg-cream/85 backdrop-blur-md">
   <div class="container-page flex h-18 items-center justify-between gap-6">
-    <a href={url('/')} class="flex shrink-0 items-center gap-3" aria-label="Coaching Academy – úvodná stránka">
-      <Image src={logo} alt="" width={30} height={40} class="h-10 w-auto" priority />
-      <span class="leading-tight">
-        <span class="block font-serif text-[19px] font-semibold text-brand-950">Dalibor Bednařík</span>
-        <span class="block text-[11px] tracking-[0.2em] text-muted uppercase">Coaching Academy</span>
-      </span>
+    <a href={url('/')} class="shrink-0 transition-opacity hover:opacity-80">
+      <Image
+        src={logo}
+        alt="Dalibor Bednařík Coaching Academy – úvodná stránka"
+        width={200}
+        height={56}
+        densities={[1, 2, 3]}
+        class="h-11 w-auto sm:h-12 lg:h-14"
+        priority
+      />
     </a>
 
     <nav aria-label="Hlavná navigácia" class="hidden lg:block">

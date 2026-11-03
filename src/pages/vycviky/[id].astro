@@ -52,7 +52,7 @@ const lecturerBios: Record<string, { photo: ImageMetadata; bio: string }> = {
     </div>
     {
       data.badge ? (
-        <Image slot="aside" src={data.badge} alt={`Odznak ${data.title}`} width={240} height={240} class="hidden size-52 object-contain mix-blend-multiply md:block" priority />
+        <Image slot="aside" src={data.badge} alt={`Odznak ${data.title}`} width={240} height={240} class="hidden size-52 object-contain md:block" priority />
       ) : (
         data.image && <Image slot="aside" src={data.image} alt="" width={320} height={320} fit="cover" class="hidden size-64 rounded-[2rem] object-cover md:block" priority />
       )

@@ -23,6 +23,39 @@
 
   --color-ink: #1f1a1c;
   --color-muted: #5f5558;
+
+  /* Motion – always use with `motion-safe:` so "reduce motion" users get a static page */
+  --ease-soft: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --animate-fade-up: fade-up 0.9s var(--ease-soft) both;
+  --animate-fade-in: fade-in 1.2s var(--ease-soft) both;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-drift: drift 18s ease-in-out infinite alternate;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+  }
+  @keyframes float {
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  @keyframes drift {
+    50% {
+      transform: translate(40px, -30px) scale(1.1);
+    }
+    100% {
+      transform: translate(-30px, 30px) scale(0.92);
+    }
+  }
 }
 
 @theme inline {
@@ -64,7 +97,7 @@
   .btn-secondary,
   .btn-light,
   .btn-outline-light {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-[15px] font-semibold transition-colors duration-200;
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-[15px] font-semibold transition duration-200 motion-safe:hover:-translate-y-0.5 motion-safe:active:translate-y-0;
   }
   .btn-primary {
     @apply bg-brand-900 text-white hover:bg-brand-800;
@@ -100,4 +133,18 @@
 }
 .prose-ca :where(h2, h3) {
   @apply font-serif font-semibold;
+}
+
+/* Scroll reveal. The classes are added by src/scripts/motion.ts only for elements below the fold
+   and only when the visitor allows motion, so the page is fully visible without JavaScript. */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.8s var(--ease-soft) var(--reveal-delay, 0ms),
+    transform 0.8s var(--ease-soft) var(--reveal-delay, 0ms);
 }

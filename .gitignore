@@ -24,3 +24,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# original photos/logos as delivered (optimized copies live in src/assets)
+fotkyalogananovyweb1/

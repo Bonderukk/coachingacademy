@@ -9,18 +9,28 @@ import { book, formatPrice } from '../config/site';
 
 <section class="pb-20 md:pb-28" aria-labelledby="kniha-promo">
   <div class="container-page">
-    <div class="grid items-center overflow-hidden rounded-[2rem] bg-brand-900 text-brand-100 md:grid-cols-2">
+    <div data-reveal class="group grid items-center overflow-hidden rounded-[2rem] bg-brand-900 text-brand-100 md:grid-cols-2">
       <div class="relative h-full bg-sand-100">
         <Image
           src={bookImage}
           alt="Kniha KOUČING – Polarity pre šťastný život a úspech v práci"
           widths={[480, 800, 1100]}
           sizes="(min-width: 768px) 50vw, 100vw"
-          class="size-full object-cover"
+          class="size-full object-cover transition duration-700 motion-safe:group-hover:scale-105"
         />
       </div>
       <div class="p-8 md:p-12 lg:p-16">
-        {book.preorder && <p class="inline-flex rounded-full bg-white/10 px-3.5 py-1.5 text-sm font-semibold text-white">Predpredaj · vychádza {book.releaseLabel}</p>}
+        {
+          book.preorder && (
+            <p class="inline-flex items-center gap-2.5 rounded-full bg-white/10 px-3.5 py-1.5 text-sm font-semibold text-white">
+              <span class="relative flex size-2" aria-hidden="true">
+                <span class="absolute inline-flex size-full rounded-full bg-white/70 motion-safe:animate-ping" />
+                <span class="relative inline-flex size-2 rounded-full bg-white" />
+              </span>
+              Predpredaj · vychádza {book.releaseLabel}
+            </p>
+          )
+        }
         <h2 id="kniha-promo" class="mt-5 text-4xl leading-tight text-white md:text-5xl">{book.shortTitle}</h2>
         <p class="mt-2 font-serif text-xl text-brand-200 italic">Polarity pre šťastný život a úspech v práci</p>
         <p class="mt-6 text-[17px] leading-relaxed">

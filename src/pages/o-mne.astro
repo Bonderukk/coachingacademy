@@ -5,7 +5,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TestimonialCard from '../components/TestimonialCard.astro';
 import CtaBanner from '../components/CtaBanner.astro';
-import portrait from '../assets/people/dalibor-okno.jpg';
+import portrait from '../assets/people/dalibor.jpg';
 import badgeMcc from '../assets/badges/icf-mcc.png';
 import badgeMember from '../assets/badges/icf-member.png';
 import badgeLevel1 from '../assets/badges/icf-level-1.png';
@@ -34,27 +34,31 @@ const badges = [
   description="Dalibor Bednařík – psychológ, kouč ICF MCC, zakladateľ Coaching Academy (2006) a Kouč roka 2019. Viac ako 2 500 hodín koučingu na Slovensku a v Česku."
   jsonLd={[{ '@context': 'https://schema.org', ...dalibor }, breadcrumbs([{ name: 'O mne', path: '/o-mne' }])]}
 >
-  <section class="overflow-hidden bg-sand-100/60">
-    <div class="container-page grid items-center gap-12 py-14 md:py-20 lg:grid-cols-2">
+  <section class="relative isolate overflow-hidden bg-sand-100/60">
+    <div aria-hidden="true" class="pointer-events-none absolute -bottom-24 -left-20 -z-10 size-96 rounded-full bg-brand-200/40 blur-3xl motion-safe:animate-drift"></div>
+    <div class="container-page grid items-center gap-14 py-14 md:py-20 lg:grid-cols-[1.2fr_0.8fr]">
       <div>
         <nav aria-label="Omrvinková navigácia" class="mb-6 text-sm text-muted">
           <a href={url('/')} class="hover:text-brand-900">Domov</a> <span aria-hidden="true">/</span> <span aria-current="page" class="text-ink">O mne</span>
         </nav>
-        <p class="eyebrow">O mne</p>
-        <h1 class="mt-3 text-5xl leading-[1.05] font-semibold md:text-6xl">Dalibor Bednařík</h1>
-        <p class="mt-6 text-xl leading-relaxed text-muted">
+        <p class="eyebrow motion-safe:animate-fade-up">O mne</p>
+        <h1 class="mt-3 text-5xl leading-[1.05] font-semibold motion-safe:animate-fade-up motion-safe:[animation-delay:80ms] md:text-6xl">Dalibor Bednařík</h1>
+        <p class="mt-6 text-xl leading-relaxed text-muted motion-safe:animate-fade-up motion-safe:[animation-delay:160ms]">
           Volám sa Dalibor Bednařík a v roku 2006 som založil Coaching Academy. Výcviky koučingu vediem od roku 2011 a od roku
           2015 poskytujeme medzinárodne ICF akreditované kurzy koučingu, ktoré sú uznávané na svetovej úrovni.
         </p>
       </div>
-      <Image
-        src={portrait}
-        alt="Dalibor Bednařík pri okne"
-        widths={[600, 900, 1300]}
-        sizes="(min-width: 1024px) 50vw, 100vw"
-        priority
-        class="aspect-[4/3] w-full rounded-[2rem] object-cover"
-      />
+      <div class="relative mx-auto w-full max-w-sm motion-safe:animate-fade-in motion-safe:[animation-delay:150ms] lg:max-w-none">
+        <div class="absolute -inset-3 -z-10 -rotate-3 rounded-[2.5rem] bg-sand-200/70"></div>
+        <Image
+          src={portrait}
+          alt="Dalibor Bednařík, psychológ a kouč ICF MCC"
+          widths={[400, 700, 900]}
+          sizes="(min-width: 1024px) 34vw, (min-width: 384px) 384px, 100vw"
+          priority
+          class="aspect-[4/5] w-full rounded-[2rem] object-cover object-[50%_30%]"
+        />
+      </div>
     </div>
   </section>
 
@@ -96,7 +100,7 @@ const badges = [
           ))
         }
         <ul class="flex flex-wrap gap-3 pt-2">
-          {badges.map((b) => <li><Image src={b.src} alt={b.alt} width={128} height={128} class="size-16 object-contain mix-blend-multiply" /></li>)}
+          {badges.map((b) => <li><Image src={b.src} alt={b.alt} width={128} height={128} class="size-16 object-contain" /></li>)}
         </ul>
       </aside>
     </div>

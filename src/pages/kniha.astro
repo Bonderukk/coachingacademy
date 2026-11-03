@@ -62,14 +62,14 @@ const readers = [
   <!-- Hero / buy box -->
   <section class="overflow-hidden bg-sand-100/60">
     <div class="container-page grid items-center gap-12 py-14 md:py-20 lg:grid-cols-2">
-      <div class="relative">
+      <div class="relative motion-safe:animate-fade-in">
         <Image
           src={bookImage}
           alt="Kniha KOUČING – Polarity pre šťastný život a úspech v práci, autor Dalibor Bednařík"
           widths={[480, 800, 1200]}
           sizes="(min-width: 1024px) 50vw, 100vw"
           priority
-          class="w-full rounded-[2rem]"
+          class="w-full rounded-[2rem] motion-safe:animate-float motion-safe:[animation-duration:7s]"
         />
       </div>
       <div>
@@ -77,11 +77,11 @@ const readers = [
           <a href={url('/')} class="hover:text-brand-900">Domov</a> <span aria-hidden="true">/</span> <span aria-current="page" class="text-ink">Kniha</span>
         </nav>
         {book.preorder && <p class="inline-flex rounded-full bg-brand-900 px-3.5 py-1.5 text-sm font-semibold text-white">Predpredaj · vychádza {book.releaseLabel}</p>}
-        <h1 class="mt-5 text-5xl leading-[1.05] font-semibold md:text-6xl">{book.shortTitle}</h1>
-        <p class="mt-3 font-serif text-2xl text-brand-800 italic">Polarity pre šťastný život a úspech v práci</p>
+        <h1 class="mt-5 text-5xl motion-safe:animate-fade-up leading-[1.05] font-semibold md:text-6xl">{book.shortTitle}</h1>
+        <p class="mt-3 font-serif text-2xl text-brand-800 italic motion-safe:animate-fade-up motion-safe:[animation-delay:100ms]">Polarity pre šťastný život a úspech v práci</p>
         <p class="mt-2 text-muted">Dalibor Bednařík</p>
 
-        <p class="mt-6 text-lg leading-relaxed">
+        <p class="mt-6 text-lg leading-relaxed motion-safe:animate-fade-up motion-safe:[animation-delay:200ms]">
           Kniha KOUČING nie je typickou akademickou učebnicou. Je to praktický a zážitkový sprievodca svetom koučovania – s
           viac ako 22 rokmi skúseností z praxe, so základmi výcviku Business & Life Coaching CORE a LEVEL 1 a s mnohými
           situáciami z koučovacej praxe.
