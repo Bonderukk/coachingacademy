@@ -87,8 +87,11 @@ const jsonLd = [
           kouč Dalibor Bednařík.
         </p>
         <div class="mt-9 flex flex-wrap gap-3 motion-safe:animate-fade-up motion-safe:[animation-delay:300ms]">
-          <a href={url('/vycviky')} class="btn-primary">Koučovacie výcviky</a>
-          <a href={url('/sluzby/individualny-koucing')} class="btn-secondary">Individuálny koučing</a>
+          <a href={url('/vycviky')} class="btn-primary shine">Koučovacie výcviky</a>
+          <a href={url('/sluzby/individualny-koucing')} class="btn-secondary">
+            Individuálny koučing
+            <Icon name="arrow-right" class="size-4 motion-safe:animate-nudge" />
+          </a>
         </div>
         <ul class="mt-12 flex flex-wrap items-center gap-4 sm:gap-6" aria-label="Akreditácie a certifikácie">
           {
