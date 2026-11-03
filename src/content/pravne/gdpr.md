@@ -145,5 +145,3 @@ Viac informácií ku cookies nájdete tu: [https://policies.google.com/technolog
 ### Kontaktné údaje
 
 Ak sa domnievate, že spracovávame Vaše údaje nespravodlivo alebo nezákonne, môžete sa sťažovať na Dozorný orgán, ktorým je Úrad na ochranu osobných údajov (ÚOOÚ). Ďalšie informácie o Dozornom orgáne Slovenskej republiky a postupe podávania sťažností nájdete [dataprotection.gov.sk](https://dataprotection.gov.sk/uoou/).
-
-<a href="/kurzy" target="_self"

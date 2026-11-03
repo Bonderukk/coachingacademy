@@ -154,6 +154,10 @@
 .prose-ca :where(h2, h3) {
   @apply font-serif font-semibold;
 }
+/* Long URLs in the legal texts would otherwise make the page wider than a phone screen. */
+.prose-ca a {
+  overflow-wrap: anywhere;
+}
 
 /* Scroll reveal. The classes are added by src/scripts/motion.ts only for elements below the fold
    and only when the visitor allows motion, so the page is fully visible without JavaScript. */

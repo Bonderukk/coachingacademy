@@ -86,14 +86,15 @@ const jsonLd = [
           Medzinárodne ICF akreditované koučovacie výcviky, individuálny a tímový koučing v Bratislave. Vedie psychológ a MCC
           kouč Dalibor Bednařík.
         </p>
-        <div class="mt-9 flex flex-wrap gap-3 motion-safe:animate-fade-up motion-safe:[animation-delay:300ms]">
+        <div class="mt-9 flex flex-col gap-3 motion-safe:animate-fade-up motion-safe:[animation-delay:300ms] sm:flex-row sm:flex-wrap">
           <a href={url('/vycviky')} class="btn-primary shine">Koučovacie výcviky</a>
           <a href={url('/sluzby/individualny-koucing')} class="btn-secondary">
             Individuálny koučing
             <Icon name="arrow-right" class="size-4 motion-safe:animate-nudge" />
           </a>
         </div>
-        <ul class="mt-12 flex flex-wrap items-center gap-4 sm:gap-6" aria-label="Akreditácie a certifikácie">
+        <!-- phones: four equal columns so the row never wraps; larger screens: fixed-size badges -->
+        <ul class="mt-12 grid max-w-sm grid-cols-4 items-center gap-3 sm:flex sm:max-w-none sm:flex-wrap sm:gap-6" aria-label="Akreditácie a certifikácie">
           {
             badges.map((b, i) => (
               <li class="motion-safe:animate-fade-up" style={`animation-delay: ${450 + i * 90}ms`}>
@@ -102,7 +103,7 @@ const jsonLd = [
                   alt={b.alt}
                   width={224}
                   height={224}
-                  class="size-18 object-contain transition duration-300 motion-safe:hover:-translate-y-1 motion-safe:hover:-rotate-6 sm:size-24 lg:size-28"
+                  class="aspect-square w-full object-contain transition duration-300 motion-safe:hover:-translate-y-1 motion-safe:hover:-rotate-6 sm:size-24 lg:size-28"
                 />
               </li>
             ))

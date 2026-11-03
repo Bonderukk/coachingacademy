@@ -62,6 +62,10 @@ const readers = [
   <!-- Hero / buy box -->
   <section class="overflow-hidden bg-sand-100/60">
     <div class="container-page grid items-center gap-12 py-14 md:py-20 lg:grid-cols-2">
+      <!-- own full-width row, so on phones it sits above the book image rather than under it -->
+      <nav aria-label="Omrvinková navigácia" class="-mb-6 text-sm text-muted lg:col-span-2">
+        <a href={url('/')} class="inline-block py-1 hover:text-brand-900">Domov</a> <span aria-hidden="true">/</span> <span aria-current="page" class="text-ink">Kniha</span>
+      </nav>
       <div class="relative motion-safe:animate-fade-in">
         <Image
           src={bookImage}
@@ -73,9 +77,6 @@ const readers = [
         />
       </div>
       <div>
-        <nav aria-label="Omrvinková navigácia" class="mb-6 text-sm text-muted">
-          <a href={url('/')} class="hover:text-brand-900">Domov</a> <span aria-hidden="true">/</span> <span aria-current="page" class="text-ink">Kniha</span>
-        </nav>
         {book.preorder && <p class="inline-flex rounded-full bg-brand-900 px-3.5 py-1.5 text-sm font-semibold text-white">Predpredaj · vychádza {book.releaseLabel}</p>}
         <h1 class="mt-5 text-5xl motion-safe:animate-fade-up leading-[1.05] font-semibold md:text-6xl">{book.shortTitle}</h1>
         <p class="mt-3 font-serif text-2xl text-brand-800 italic motion-safe:animate-fade-up motion-safe:[animation-delay:100ms]">Polarity pre šťastný život a úspech v práci</p>

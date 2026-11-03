@@ -303,5 +303,3 @@ alebo
 2. Poskytovateľ si vyhradzuje právo na zmeny a doplnenie tohto reklamačného poriadku bez predchádzajúceho upozornenia.
 
 3. Dohľad nad dodržiavaním povinností zo strany Poskytovateľa vo veciach ochrany spotrebiteľa v zmysle platnej právnej úpravy vykonáva Slovenská obchodná inšpekcia – Ústredný inšpektorát Slovenskej obchodnej inšpekcie, adresa: poštový priečinok 29, Prievozská 32, 827 99 Bratislava 27 a jej podriadené miestne príslušné Inšpektoráty.
-
-<a href="/kurzy" target="_self"

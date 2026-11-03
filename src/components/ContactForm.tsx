@@ -68,7 +68,7 @@ export default function ContactForm({ endpoint, email, variant = 'contact', topi
   }
 
   return (
-    <form onSubmit={onSubmit} className="grid gap-5 sm:grid-cols-2">
+    <form onSubmit={onSubmit} className="grid grid-cols-1 gap-5 sm:grid-cols-2">
       <input type="hidden" name="_subject" value={isWithdrawal ? 'Odstúpenie od zmluvy' : `Web: ${topic || 'nová správa'}`} />
       <input type="text" name="_gotcha" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
 

@@ -16,12 +16,12 @@ const { title, eyebrow, lead, breadcrumbs = [] } = Astro.props;
     {
       breadcrumbs.length > 0 && (
         <nav aria-label="Omrvinková navigácia" class="mb-6 text-sm text-muted">
-          <ol class="flex flex-wrap items-center gap-1.5">
-            <li><a href={url('/')} class="hover:text-brand-900">Domov</a></li>
+          <ol class="-my-1 flex flex-wrap items-center gap-x-1.5">
+            <li><a href={url('/')} class="inline-block py-1 hover:text-brand-900">Domov</a></li>
             {breadcrumbs.map((crumb) => (
               <li class="flex items-center gap-1.5">
                 <span aria-hidden="true">/</span>
-                {crumb.href ? <a href={url(crumb.href)} class="hover:text-brand-900">{crumb.label}</a> : <span aria-current="page" class="text-ink">{crumb.label}</span>}
+                {crumb.href ? <a href={url(crumb.href)} class="inline-block py-1 hover:text-brand-900">{crumb.label}</a> : <span aria-current="page" class="text-ink">{crumb.label}</span>}
               </li>
             ))}
           </ol>

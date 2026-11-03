@@ -36,7 +36,7 @@ export default function SpotifyEmbed({ src, title }: Props) {
         </svg>
       </button>
       <div>
-        <p className="font-serif text-2xl text-white">Počúvajte epizódy priamo tu</p>
+        <p className="font-serif text-2xl text-balance text-white">Počúvajte epizódy priamo tu</p>
         <p className="mt-2 max-w-sm text-sm text-brand-200">
           Po kliknutí sa načíta prehrávač Spotify, ktorý môže ukladať vlastné cookies.
         </p>

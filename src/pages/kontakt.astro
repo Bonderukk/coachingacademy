@@ -21,7 +21,7 @@ const { company } = site;
   <PageHero eyebrow="Kontakt" title="Napíšte nám" lead="Váš podnet, záujem alebo otázku nám pošlite cez formulár, e-mailom či telefonicky. Ozveme sa vám." breadcrumbs={[{ label: 'Kontakt' }]} />
 
   <section class="section">
-    <div class="container-page grid gap-14 lg:grid-cols-[1fr_340px]">
+    <div class="container-page grid grid-cols-1 gap-14 lg:grid-cols-[1fr_340px]">
       <div id="formular" class="scroll-mt-28">
         <h2 class="sr-only">Kontaktný formulár</h2>
         <ContactForm client:load endpoint={site.formEndpoint} email={site.email} topics={topics} />

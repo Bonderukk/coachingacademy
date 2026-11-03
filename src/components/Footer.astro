@@ -45,35 +45,35 @@ const social = [
 
     <nav aria-label="Výcviky">
       <h2 class="font-sans text-sm font-semibold tracking-[0.14em] text-white uppercase">{vycviky.label}</h2>
-      <ul class="mt-4 space-y-2.5 text-[15px]">
-        {vycviky.children?.map((l) => <li><a href={url(l.href)} class="hover:text-white">{l.label}</a></li>)}
+      <ul class="mt-3 space-y-0.5 text-[15px]">
+        {vycviky.children?.map((l) => <li><a href={url(l.href)} class="inline-block py-1 hover:text-white">{l.label}</a></li>)}
       </ul>
     </nav>
 
     <nav aria-label="Služby">
       <h2 class="font-sans text-sm font-semibold tracking-[0.14em] text-white uppercase">{sluzby.label}</h2>
-      <ul class="mt-4 space-y-2.5 text-[15px]">
-        {sluzby.children?.map((l) => <li><a href={url(l.href)} class="hover:text-white">{l.label}</a></li>)}
-        <li><a href={url('/kniha')} class="hover:text-white">Kniha KOUČING</a></li>
-        <li><a href={url('/podcast')} class="hover:text-white">Podcast</a></li>
+      <ul class="mt-3 space-y-0.5 text-[15px]">
+        {sluzby.children?.map((l) => <li><a href={url(l.href)} class="inline-block py-1 hover:text-white">{l.label}</a></li>)}
+        <li><a href={url('/kniha')} class="inline-block py-1 hover:text-white">Kniha KOUČING</a></li>
+        <li><a href={url('/podcast')} class="inline-block py-1 hover:text-white">Podcast</a></li>
       </ul>
     </nav>
 
     <div>
       <h2 class="font-sans text-sm font-semibold tracking-[0.14em] text-white uppercase">Kontakt</h2>
-      <ul class="mt-4 space-y-3 text-[15px]">
+      <ul class="mt-3 space-y-1 text-[15px]">
         <li>
-          <a href={`mailto:${site.email}`} class="inline-flex items-center gap-2.5 hover:text-white">
+          <a href={`mailto:${site.email}`} class="inline-flex items-center gap-2.5 py-1 hover:text-white">
             <Icon name="mail" class="size-4" />{site.email}
           </a>
         </li>
         <li>
-          <a href={`tel:${site.phone.replace(/\s/g, '')}`} class="inline-flex items-center gap-2.5 hover:text-white">
+          <a href={`tel:${site.phone.replace(/\s/g, '')}`} class="inline-flex items-center gap-2.5 py-1 hover:text-white">
             <Icon name="phone" class="size-4" />{site.phone}
           </a>
         </li>
       </ul>
-      <address class="mt-5 text-sm leading-relaxed not-italic text-brand-100/60">
+      <address class="mt-4 text-sm leading-relaxed not-italic text-brand-100/60">
         {company.name}<br />
         {company.street}, {company.zip} {company.city}<br />
         IČO: {company.ico}<br />
@@ -85,10 +85,10 @@ const social = [
   <div class="border-t border-white/10">
     <div class="container-page flex flex-col gap-3 py-6 text-sm text-brand-100/60 md:flex-row md:items-center md:justify-between">
       <p>© {year} {company.name}</p>
-      <ul class="flex flex-wrap gap-x-5 gap-y-2">
-        <li><a href={url('/gdpr')} class="hover:text-white">Ochrana osobných údajov</a></li>
-        <li><a href={url('/vop')} class="hover:text-white">Obchodné podmienky</a></li>
-        <li><a href={url('/zrusenie-objednavky')} class="hover:text-white">Odstúpiť od zmluvy</a></li>
+      <ul class="-my-1 flex flex-wrap gap-x-5">
+        <li><a href={url('/gdpr')} class="inline-block py-1 hover:text-white">Ochrana osobných údajov</a></li>
+        <li><a href={url('/vop')} class="inline-block py-1 hover:text-white">Obchodné podmienky</a></li>
+        <li><a href={url('/zrusenie-objednavky')} class="inline-block py-1 hover:text-white">Odstúpiť od zmluvy</a></li>
       </ul>
     </div>
   </div>
