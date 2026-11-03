@@ -30,6 +30,7 @@
   --animate-fade-in: fade-in 1.2s var(--ease-soft) both;
   --animate-float: float 6s ease-in-out infinite;
   --animate-drift: drift 18s ease-in-out infinite alternate;
+  --animate-kenburns: kenburns 16s ease-in-out infinite alternate;
 
   @keyframes fade-up {
     from {
@@ -46,6 +47,11 @@
   @keyframes float {
     50% {
       transform: translateY(-10px);
+    }
+  }
+  @keyframes kenburns {
+    to {
+      transform: scale(1.1) translate(-2%, -1.5%);
     }
   }
   @keyframes drift {
@@ -147,4 +153,35 @@
   transition:
     opacity 0.8s var(--ease-soft) var(--reveal-delay, 0ms),
     transform 0.8s var(--ease-soft) var(--reveal-delay, 0ms);
+}
+
+/* Periodic light sweep across a call-to-action (e.g. the book's buy button). */
+.shine {
+  position: relative;
+  overflow: hidden;
+  --shine-color: rgb(255 255 255 / 0.45);
+}
+.btn-light.shine {
+  --shine-color: rgb(74 15 28 / 0.14);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .shine::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(110deg, transparent 35%, var(--shine-color) 50%, transparent 65%);
+    transform: translateX(-120%);
+    animation: shine 5s ease-in-out infinite;
+  }
+}
+@keyframes shine {
+  0%,
+  60% {
+    transform: translateX(-120%);
+  }
+  90%,
+  100% {
+    transform: translateX(120%);
+  }
 }

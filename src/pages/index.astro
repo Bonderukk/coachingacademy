@@ -90,16 +90,16 @@ const jsonLd = [
           <a href={url('/vycviky')} class="btn-primary">Koučovacie výcviky</a>
           <a href={url('/sluzby/individualny-koucing')} class="btn-secondary">Individuálny koučing</a>
         </div>
-        <ul class="mt-12 flex flex-wrap items-center gap-3 sm:gap-5" aria-label="Akreditácie a certifikácie">
+        <ul class="mt-12 flex flex-wrap items-center gap-4 sm:gap-6" aria-label="Akreditácie a certifikácie">
           {
             badges.map((b, i) => (
               <li class="motion-safe:animate-fade-up" style={`animation-delay: ${450 + i * 90}ms`}>
                 <Image
                   src={b.src}
                   alt={b.alt}
-                  width={128}
-                  height={128}
-                  class="size-14 object-contain transition duration-300 motion-safe:hover:-translate-y-1 motion-safe:hover:-rotate-6 sm:size-16"
+                  width={224}
+                  height={224}
+                  class="size-18 object-contain transition duration-300 motion-safe:hover:-translate-y-1 motion-safe:hover:-rotate-6 sm:size-24 lg:size-28"
                 />
               </li>
             ))
@@ -162,7 +162,7 @@ const jsonLd = [
         <a href={url('/vycviky')} class="btn-secondary self-start md:self-auto">Porovnať výcviky</a>
       </div>
       <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {courses.map((course) => <CourseCard course={course} />)}
+        {courses.map((course, i) => <CourseCard course={course} index={i} />)}
       </div>
     </div>
   </section>
@@ -178,9 +178,9 @@ const jsonLd = [
       </div>
       <div class="mt-12 grid gap-6 md:grid-cols-3">
         {
-          audiences.map((a) => (
+          audiences.map((a, i) => (
             <article class="card group relative p-8 transition duration-300 hover:shadow-xl hover:shadow-brand-950/5 motion-safe:hover:-translate-y-1">
-              <Image src={a.icon} alt="" width={72} height={72} class="size-16 object-contain" />
+              <div class="w-fit motion-safe:animate-float" style={`animation-delay: -${i * 2}s`}><Image src={a.icon} alt="" width={144} height={144} class="size-18 object-contain" /></div>
               <h3 class="mt-6 text-2xl font-semibold">{a.title}</h3>
               <p class="mt-3 text-muted">{a.text}</p>
               <a href={url(a.href)} class="mt-6 inline-flex items-center gap-1.5 font-semibold text-brand-900 after:absolute after:inset-0">

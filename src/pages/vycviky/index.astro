@@ -49,7 +49,7 @@ const path = [
 
       <h2 class="mt-24 text-3xl font-semibold md:text-4xl">Všetky výcviky</h2>
       <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {courses.map((course) => <CourseCard course={course} />)}
+        {courses.map((course, i) => <CourseCard course={course} index={i} />)}
       </div>
     </div>
   </section>
