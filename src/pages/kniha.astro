@@ -1,9 +1,11 @@
 ---
 import { url } from '../lib/url';
 import { Image, getImage } from 'astro:assets';
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BuyBookButton from '../components/BuyBookButton.astro';
 import Icon from '../components/Icon.astro';
+import BookCard from '../components/BookCard.astro';
 import bookImage from '../assets/book/kniha.jpg';
 import portrait from '../assets/people/dalibor.jpg';
 import { book, formatPrice } from '../config/site';
@@ -12,6 +14,7 @@ import { bookProduct, breadcrumbs } from '../lib/schema';
 const description =
   'Kniha KOUČING od Dalibora Bednaříka – praktický a zážitkový sprievodca koučovaním. Princíp polarít, GROW model a situácie z 22 rokov praxe. Predpredaj za 20 €.';
 
+const moreBooks = (await getCollection('knihy')).sort((a, b) => a.data.order - b.data.order);
 const ogImage = await getImage({ src: bookImage, width: 1200, height: 630, fit: 'cover', format: 'jpg' });
 
 const pillars = [
@@ -57,14 +60,16 @@ const readers = [
   description={description}
   image={ogImage.src}
   type="book"
-  jsonLd={[bookProduct(ogImage.src, description), breadcrumbs([{ name: 'Kniha KOUČING', path: '/kniha' }])]}
+  jsonLd={[bookProduct(ogImage.src, description), breadcrumbs([{ name: 'Knihy', path: '/knihy' }, { name: 'Kniha KOUČING', path: '/kniha' }])]}
 >
   <!-- Hero / buy box -->
   <section class="overflow-hidden bg-sand-100/60">
     <div class="container-page grid items-center gap-12 py-14 md:py-20 lg:grid-cols-2">
       <!-- own full-width row, so on phones it sits above the book image rather than under it -->
       <nav aria-label="Omrvinková navigácia" class="-mb-6 text-sm text-muted lg:col-span-2">
-        <a href={url('/')} class="inline-block py-1 hover:text-brand-900">Domov</a> <span aria-hidden="true">/</span> <span aria-current="page" class="text-ink">Kniha</span>
+        <a href={url('/')} class="inline-block py-1 hover:text-brand-900">Domov</a> <span aria-hidden="true">/</span>
+        <a href={url('/knihy')} class="inline-block py-1 hover:text-brand-900">Knihy</a> <span aria-hidden="true">/</span>
+        <span aria-current="page" class="text-ink">KOUČING</span>
       </nav>
       <div class="relative motion-safe:animate-fade-in">
         <Image
@@ -177,6 +182,22 @@ const readers = [
           <BuyBookButton />
           <a href={url('/vycviky/icf-level-1')} class="btn-secondary">Výcvik postavený na princípe polarít</a>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- The iSPAK books sold here too -->
+  <section class="section bg-sand-100/60" aria-labelledby="dalsie-knihy">
+    <div class="container-page">
+      <div data-reveal class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div class="max-w-2xl">
+          <p class="eyebrow">Ďalšie knihy</p>
+          <h2 id="dalsie-knihy" class="mt-3 text-3xl font-semibold md:text-4xl">Knihy o systemickej práci</h2>
+        </div>
+        <a href={url('/knihy')} class="btn-secondary self-start md:self-auto">Všetky knihy</a>
+      </div>
+      <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {moreBooks.map((b) => <BookCard book={b} />)}
       </div>
     </div>
   </section>

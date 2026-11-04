@@ -37,7 +37,7 @@ const { items, currentPath } = Astro.props;
           items.map((item) =>
             item.children ? (
               <li>
-                <details class="group" open={currentPath.startsWith(item.href)}>
+                <details class="group" open={currentPath.startsWith(item.href) || item.children.some((child) => currentPath === child.href)}>
                   <summary class="flex cursor-pointer list-none items-center justify-between rounded-2xl px-4 py-3.5 font-serif text-xl text-brand-950 hover:bg-white [&::-webkit-details-marker]:hidden">
                     {item.label}
                     <Icon name="chevron-down" class="size-5 transition-transform group-open:rotate-180" />

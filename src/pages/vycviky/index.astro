@@ -3,7 +3,7 @@ import { url } from '../../lib/url';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/PageHero.astro';
-import CourseCard from '../../components/CourseCard.astro';
+import CourseGrid from '../../components/CourseGrid.astro';
 import CtaBanner from '../../components/CtaBanner.astro';
 import { breadcrumbs } from '../../lib/schema';
 
@@ -18,7 +18,7 @@ const path = [
 
 <BaseLayout
   title="ICF koučovacie výcviky v Bratislave"
-  description="Medzinárodne ICF akreditované koučovacie výcviky CORE, LEVEL 1 (ACC), LEVEL 2 (PCC) a systemický koučing v Bratislave. Vedie MCC kouč Dalibor Bednařík."
+  description="Medzinárodne ICF akreditované koučovacie výcviky CORE, LEVEL 1 (ACC), LEVEL 2 (PCC) a systemické výcviky v Bratislave. Vedie MCC kouč Dalibor Bednařík."
   jsonLd={breadcrumbs([{ name: 'Výcviky', path: '/vycviky' }])}
 >
   <PageHero
@@ -48,9 +48,7 @@ const path = [
       </ol>
 
       <h2 class="mt-24 text-3xl font-semibold md:text-4xl">Všetky výcviky</h2>
-      <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {courses.map((course, i) => <CourseCard course={course} index={i} />)}
-      </div>
+      <CourseGrid courses={courses} class="mt-10" />
     </div>
   </section>
 

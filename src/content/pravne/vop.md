@@ -6,7 +6,7 @@ order: 2
 
 ### 1. Úvodné ustanovenia
 
-**1.1** Coaching Academy s.r.o. IČO: 36 674 257, so sídlom Šuňavcova 9, 831 02 Bratislava, zapísaná v Obchodnom registri Okresného súdu Bratislava I, Vložka číslo: 42258/B (ďalej len „Poskytovateľ“), vydáva Všeobecné obchodné podmienky (ďalej len „VOP“) o poskytovaní svojich služieb, ktoré sú platné pre celé územie Slovenskej republiky.
+**1.1** Coaching Academy s.r.o. IČO: 36 674 257, so sídlom Bajkalská 45E, 821 05 Bratislava, zapísaná v Obchodnom registri Okresného súdu Bratislava I, Vložka číslo: 42258/B (ďalej len „Poskytovateľ“), vydáva Všeobecné obchodné podmienky (ďalej len „VOP“) o poskytovaní svojich služieb, ktoré sú platné pre celé územie Slovenskej republiky.
 
 **1.2** VOP sú neoddeliteľnou súčasťou Zmluvy uzatvorenej medzi Poskytovateľom a Objednávateľom.
 
@@ -193,7 +193,7 @@ Tieto Všeobecné obchodné podmienky nadobúdajú účinnosť dňa 21.10. 2022.
 
 ### Všeobecné ustanovenia
 
-1. Tento reklamačný poriadok upravuje postup pri uplatňovaní reklamácie na služby ponúkané a poskytované spoločnosťou Coaching Academy s.r.o., IČO: 36 674 257, so sídlom Šuňavcova 9, 831 02 Bratislava, zapísaná v Obchodnom registri Okresného súdu Bratislava I, Vložka číslo: 42258/B.
+1. Tento reklamačný poriadok upravuje postup pri uplatňovaní reklamácie na služby ponúkané a poskytované spoločnosťou Coaching Academy s.r.o., IČO: 36 674 257, so sídlom Bajkalská 45E, 821 05 Bratislava, zapísaná v Obchodnom registri Okresného súdu Bratislava I, Vložka číslo: 42258/B.
 
 2. Reklamačný poriadok je záväzný pre Poskytovateľa aj Objednávateľa.
 

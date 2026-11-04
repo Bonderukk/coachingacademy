@@ -3,11 +3,13 @@ import { Image } from 'astro:assets';
 import logo from '../assets/brand/logo-horizontal.png';
 import Icon from './Icon.astro';
 import MobileNav from './MobileNav.astro';
-import { nav } from '../config/site';
+import { nav, type NavItem } from '../config/site';
 import { cleanPath, url } from '../lib/url';
 
 const path = cleanPath(Astro.url.pathname);
 const isActive = (href: string) => path === href || path.startsWith(href + '/');
+// A dropdown is active on its own pages and on any page it links to (e.g. Knihy on /kniha).
+const isSectionActive = (item: NavItem) => isActive(item.href) || !!item.children?.some((child) => path === child.href);
 const linkBase = 'rounded-full px-3.5 py-2 text-[15px] font-medium transition-colors hover:bg-brand-900/5 hover:text-brand-900';
 ---
 
@@ -33,7 +35,7 @@ const linkBase = 'rounded-full px-3.5 py-2 text-[15px] font-medium transition-co
               <li class="group relative">
                 <a
                   href={url(item.href)}
-                  class:list={[linkBase, 'inline-flex items-center gap-1', isActive(item.href) && 'text-brand-900']}
+                  class:list={[linkBase, 'inline-flex items-center gap-1', isSectionActive(item) && 'text-brand-900']}
                   aria-current={isActive(item.href) ? 'page' : undefined}
                 >
                   {item.label}

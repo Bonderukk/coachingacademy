@@ -31,6 +31,8 @@ To make fnm switch versions automatically, add this line to your PowerShell `$PR
 | Course texts, prices, dates                 | `src/content/vycviky/*.md`               |
 | Service pages                               | `src/content/sluzby/*.md`                |
 | Testimonials (`featured: true` = homepage)  | `src/content/referencie.yaml`            |
+| iSPAK books: texts, formats, prices         | `src/content/knihy/*.md`                 |
+| CV on the About page                        | `src/content/cv.yaml`                    |
 | GDPR, terms (VOP)                           | `src/content/pravne/*.md`                |
 | Contacts, company info, menu, book price    | `src/config/site.ts`                     |
 | Colors, fonts, buttons                      | `src/styles/global.css`, `astro.config.mjs` |

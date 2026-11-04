@@ -44,6 +44,8 @@ const sluzby = defineCollection({
       order: z.number(),
       image: image(),
       imageAlt: z.string(),
+      // CSS object-position for cropped previews, e.g. 'top' so a face isn't cut off on the 3:2 service card
+      imagePosition: z.string().default('center'),
       cta: z.string().default('Mám záujem'),
     }),
 });
@@ -60,6 +62,44 @@ const referencie = defineCollection({
     }),
 });
 
+// Books from the iSPAK store sold here as well. The KOUČING book has its own page (src/pages/kniha.astro).
+const knihy = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/knihy' }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      subtitle: z.string(),
+      authors: z.array(z.string()),
+      publisher: z.string().default('iSPAK – Inštitút systemickej práce a konštelácií'),
+      metaTitle: z.string(),
+      description: z.string(),
+      summary: z.string(),
+      order: z.number(),
+      image: image(),
+      imageAlt: z.string(),
+      gallery: z.array(z.object({ src: image(), alt: z.string() })).default([]),
+      // Each format can have its own Stripe Payment Link; without one the order goes by e-mail.
+      variants: z.array(
+        z.object({
+          label: z.string(),
+          price: z.number(),
+          digital: z.boolean().default(false),
+          stripeLink: z.url().optional(),
+        }),
+      ),
+    }),
+});
+
+// Curriculum vitae on /o-mne, grouped by field.
+const cv = defineCollection({
+  loader: file('./src/content/cv.yaml'),
+  schema: z.object({
+    title: z.string(),
+    order: z.number(),
+    items: z.array(z.object({ year: z.string().optional(), text: z.string() })),
+  }),
+});
+
 const pravne = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/pravne' }),
   schema: z.object({
@@ -69,4 +109,4 @@ const pravne = defineCollection({
   }),
 });
 
-export const collections = { vycviky, sluzby, referencie, pravne };
+export const collections = { vycviky, sluzby, referencie, knihy, cv, pravne };

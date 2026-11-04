@@ -1,0 +1,19 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import CourseCard from './CourseCard.astro';
+
+interface Props {
+  courses: CollectionEntry<'vycviky'>[];
+  class?: string;
+}
+
+const { courses, class: className } = Astro.props;
+// Six columns on desktop: rows of three cards; when two are left over they split the last row in half
+// (CORE, LEVEL 1, LEVEL 2 on top, the two systemic courses below) instead of leaving a lone card.
+const leftover = courses.length % 3;
+const span = (i: number) => (leftover === 2 && i >= courses.length - 2 ? 'lg:col-span-3' : 'lg:col-span-2');
+---
+
+<div class:list={['grid gap-6 sm:grid-cols-2 lg:grid-cols-6', className]}>
+  {courses.map((course, i) => <CourseCard course={course} index={i} class={span(i)} />)}
+</div>

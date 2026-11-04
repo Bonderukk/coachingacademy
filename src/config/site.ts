@@ -10,9 +10,9 @@ export const site = {
   company: {
     name: 'Coaching Academy s.r.o.',
     ico: '36 674 257',
-    street: 'Šuňavcova 9',
+    street: 'Bajkalská 45E',
     city: 'Bratislava',
-    zip: '831 02',
+    zip: '821 05',
     country: 'SK',
     register: 'Obchodný register Okresného súdu Bratislava I, oddiel Sro, vložka č. 42258/B',
   },
@@ -54,6 +54,7 @@ export const nav: NavItem[] = [
       { label: 'ICF Business & Life Coaching LEVEL 1', href: '/vycviky/icf-level-1' },
       { label: 'ICF Business & Life Coaching LEVEL 2', href: '/vycviky/icf-level-2' },
       { label: 'Systemický koučing', href: '/vycviky/systemicky-koucing' },
+      { label: 'Systémová dynamika v organizáciách', href: '/vycviky/systemova-dynamika-v-organizaciach' },
     ],
   },
   {
@@ -67,7 +68,16 @@ export const nav: NavItem[] = [
       { label: 'Authentic Leadership', href: '/sluzby/leadership' },
     ],
   },
-  { label: 'Kniha', href: '/kniha' },
+  {
+    label: 'Knihy',
+    href: '/knihy',
+    children: [
+      { label: 'KOUČING – Dalibor Bednařík', href: '/kniha' },
+      { label: 'Organizácia ako živý systém', href: '/knihy/organizacia-ako-zivy-system' },
+      { label: 'Aby deti mohli byť deťmi', href: '/knihy/aby-deti-mohli-byt-detmi' },
+      { label: 'Princípy systemickej práce', href: '/knihy/principy-systemickej-prace' },
+    ],
+  },
   { label: 'Podcast', href: '/podcast' },
   { label: 'O mne', href: '/o-mne' },
 ];

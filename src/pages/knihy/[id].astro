@@ -1,0 +1,138 @@
+---
+import { url } from '../../lib/url';
+import { Image, getImage } from 'astro:assets';
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BookCard from '../../components/BookCard.astro';
+import BookPromo from '../../components/BookPromo.astro';
+import Icon from '../../components/Icon.astro';
+import { book as koucing, formatPrice } from '../../config/site';
+import { bookOrderMailto } from '../../lib/order';
+import { breadcrumbs, storeBook } from '../../lib/schema';
+
+export async function getStaticPaths() {
+  const books = await getCollection('knihy');
+  return books.map((entry) => ({ params: { id: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const data = entry.data;
+const authors = data.authors.join(' & ');
+const others = (await getCollection('knihy')).filter((b) => b.id !== entry.id).sort((a, b) => a.data.order - b.data.order);
+const ogImage = await getImage({ src: data.image, width: 1200, height: 630, fit: 'cover', format: 'jpg' });
+const paysByCard = data.variants.every((v) => v.stripeLink);
+---
+
+<BaseLayout
+  title={data.metaTitle}
+  description={data.description}
+  image={ogImage.src}
+  type="book"
+  jsonLd={[storeBook(entry, ogImage.src), breadcrumbs([{ name: 'Knihy', path: '/knihy' }, { name: data.title, path: `/knihy/${entry.id}` }])]}
+>
+  <!-- Hero / buy box -->
+  <section class="overflow-hidden bg-sand-100/60">
+    <div class="container-page grid items-center gap-12 py-14 md:py-20 lg:grid-cols-2">
+      <nav aria-label="Omrvinková navigácia" class="-mb-6 text-sm text-muted lg:col-span-2">
+        <ol class="-my-1 flex flex-wrap items-center gap-x-1.5">
+          <li><a href={url('/')} class="inline-block py-1 hover:text-brand-900">Domov</a></li>
+          <li class="flex items-center gap-1.5"><span aria-hidden="true">/</span><a href={url('/knihy')} class="inline-block py-1 hover:text-brand-900">Knihy</a></li>
+          <li class="flex items-center gap-1.5"><span aria-hidden="true">/</span><span aria-current="page" class="text-ink">{data.title}</span></li>
+        </ol>
+      </nav>
+      <div class="motion-safe:animate-fade-in">
+        <Image
+          src={data.image}
+          alt={data.imageAlt}
+          widths={[480, 800, 1200]}
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          priority
+          class="w-full rounded-[2rem]"
+        />
+      </div>
+      <div>
+        <p class="eyebrow motion-safe:animate-fade-up">{authors}</p>
+        <h1 class="mt-3 text-4xl leading-[1.1] font-semibold motion-safe:animate-fade-up motion-safe:[animation-delay:80ms] md:text-5xl">{data.title}</h1>
+        <p class="mt-3 font-serif text-xl text-brand-800 italic motion-safe:animate-fade-up motion-safe:[animation-delay:120ms] md:text-2xl">{data.subtitle}</p>
+        <p class="mt-6 text-lg leading-relaxed motion-safe:animate-fade-up motion-safe:[animation-delay:200ms]">{data.summary}</p>
+
+        <div class="card mt-8 p-5 sm:p-6">
+          <h2 class="font-serif text-2xl font-semibold">Objednať</h2>
+          <ul class="mt-3 divide-y divide-sand-200">
+            {
+              data.variants.map((variant) => (
+                <li class="flex items-center gap-2.5 py-3.5 sm:gap-3">
+                  <span class="min-w-0 flex-1">
+                    <span class="block font-medium text-brand-950">{variant.label}</span>
+                    <span class="block text-sm text-muted">{variant.digital ? 'pošleme e-mailom' : `+ poštovné ${formatPrice(koucing.shipping)}`}</span>
+                  </span>
+                  <span class="flex shrink-0 items-center gap-2.5 sm:gap-4">
+                    <span class="font-serif text-xl font-semibold text-brand-950 sm:text-2xl">{formatPrice(variant.price)}</span>
+                    <a
+                      href={variant.stripeLink || bookOrderMailto(data.title, { variant: variant.label, digital: variant.digital })}
+                      class="btn-primary px-4 py-2 sm:px-5 sm:py-2.5"
+                      aria-label={`Objednať: ${data.title} – ${variant.label}`}
+                    >
+                      Objednať
+                    </a>
+                  </span>
+                </li>
+              ))
+            }
+          </ul>
+          <p class="mt-3 flex gap-2.5 text-[15px] text-muted">
+            <Icon name="check" class="mt-0.5 size-5 shrink-0 text-brand-700" />
+            {paysByCard ? 'Zaplatíte bezpečne kartou, Apple Pay alebo Google Pay' : 'Objednávku a platobné údaje vám potvrdíme e-mailom'}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Description + details -->
+  <section class="section">
+    <div class="container-page grid gap-12 lg:grid-cols-[1fr_360px] lg:gap-16">
+      <article class="prose prose-lg prose-ca max-w-none">
+        <Content />
+      </article>
+
+      <aside class="space-y-6 lg:sticky lg:top-28 lg:self-start" aria-label="O vydaní">
+        <dl class="card space-y-4 p-7">
+          <div>
+            <dt class="text-sm font-semibold tracking-[0.1em] text-brand-700 uppercase">{data.authors.length > 1 ? 'Autori' : 'Autorka'}</dt>
+            <dd class="mt-1">{authors}</dd>
+          </div>
+          <div>
+            <dt class="text-sm font-semibold tracking-[0.1em] text-brand-700 uppercase">Vydavateľ</dt>
+            <dd class="mt-1">{data.publisher}</dd>
+          </div>
+          <div>
+            <dt class="text-sm font-semibold tracking-[0.1em] text-brand-700 uppercase">Formáty</dt>
+            <dd class="mt-1">{data.variants.some((v) => v.digital) ? 'Tlačená kniha, PDF' : 'Tlačená kniha'}</dd>
+          </div>
+        </dl>
+        {
+          data.gallery.length > 0 && (
+            <div class:list={['grid gap-4', data.gallery.length > 1 && 'grid-cols-2']}>
+              {data.gallery.map((photo) => (
+                <Image src={photo.src} alt={photo.alt} widths={[360, 720]} sizes="(min-width: 1024px) 360px, 50vw" class="w-full rounded-2xl" />
+              ))}
+            </div>
+          )
+        }
+      </aside>
+    </div>
+  </section>
+
+  <!-- More books -->
+  <section class="section bg-sand-100/60" aria-labelledby="dalsie-knihy">
+    <div class="container-page">
+      <h2 id="dalsie-knihy" class="text-3xl font-semibold md:text-4xl">Ďalšie knihy</h2>
+      <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {others.map((book) => <BookCard book={book} />)}
+      </div>
+    </div>
+  </section>
+  <div class="pt-20 md:pt-28"><BookPromo /></div>
+</BaseLayout>

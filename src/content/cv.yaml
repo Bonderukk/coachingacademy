@@ -1,0 +1,111 @@
+# Curriculum vitae on the /o-mne page. Groups are shown by `order`; add new items at the end of a group.
+- id: psychologia
+  title: Psychológia a psychoterapia
+  order: 1
+  items:
+    - year: 1993 – 1997
+      text: Filozofická fakulta UK v Bratislave – odbor psychológia
+    - year: 1995 – 1998
+      text: Psychoterapeutický výcvik (POP), certifikovaný Slovenskou psychoterapeutickou spoločnosťou, POP inštitútom v Portlande (USA) a v Zürichu
+
+- id: garuda
+  title: GARUDA
+  order: 2
+  items:
+    - year: '1999'
+      text: Medzinárodná certifikácia na prácu so systémom GARUDA HRD
+    - year: '2003'
+      text: Absolvent leadership koučingu v systéme GARUDA
+
+- id: koucing
+  title: Koučing a mentoring
+  order: 3
+  items:
+    - year: '2007'
+      text: Supervízia v koučovaní (CZ, 3 dni)
+    - year: '2009'
+      text: Medzinárodne ICF ACTP certifikovaný výcvikový program Erickson College – The Art and Science of Coaching
+    - year: '2010'
+      text: Certifikovaný Erickson Certified Professional Coach (ECPC)
+    - year: '2011'
+      text: Prvý externý slovenský celosvetovo certifikovaný ICF PCC (Professional Certified Coach)
+    - year: '2014'
+      text: Co-active model – Advanced techniques, Clark Friedrichs (1 deň)
+    - year: '2015'
+      text: Challenging Coaching Workshop – John Blakey (UK, 1 deň)
+    - year: '2015'
+      text: 'Autor a lektor celosvetovo certifikovaného ICF ACSTH výcviku koučov: Business & Life Coaching'
+    - year: '2020'
+      text: Kouč roka 2019
+    - year: '2021'
+      text: Systemický koučing a poradenstvo – výcvik (12 dní), iSPAK a Bert Hellinger Instituut Nederland
+    - year: '2024'
+      text: 4 Quadrant Thinking, ICF 28 CCE – Peter Štefányi (BLG, 4 dni)
+    - year: '2026'
+      text: Certifikovaný na úrovni ICF MCC (Master Certified Coach)
+
+- id: nlp
+  title: NLP
+  order: 4
+  items:
+    - year: '2011'
+      text: Medzinárodne certifikovaný NLP Practitioner
+
+- id: systemicky-pristup
+  title: Systemický prístup
+  order: 5
+  items:
+    - year: '2018'
+      text: Výcvik rodinných konštelácií (Zdeňka Tušková, Bratislava)
+    - year: '2020'
+      text: Výcvik systemického koučingu certifikovaný iSPAK a Bert Hellinger Instituut Nederland
+    - year: '2021'
+      text: Learning circle – Stephan Hausner (DE, 4 dni)
+    - year: '2022'
+      text: Výcvik systemického koučingu ADVANCED certifikovaný iSPAK a Bert Hellinger Instituut Nederland
+    - year: '2022'
+      text: Master tréning – systemická facilitácia za asistencie koní, Bert Hellinger Instituut Nederland (NL, 4 dni)
+    - year: '2022'
+      text: Learning circle – Stephan Hausner (ESP, 4 dni)
+    - year: 2022 – 2023
+      text: Systemické konštelácie (16 dní), iSPAK
+    - year: '2023'
+      text: Life Integration Process – Ruedi Eggerschwiler (CZ, 3 dni)
+    - year: '2023'
+      text: Learning circle – Stephan Hausner (DE, 4 dni)
+    - year: '2023'
+      text: Life Integration Process – Wilfried Nelles (CZ, 3 dni)
+    - year: '2023'
+      text: Learning circle – Stephan Hausner (ESP, 4 dni)
+    - year: 2023 – 2024
+      text: Dynamika systémov v organizáciách (16 dní), iSPAK, Systemic Constellations Center Riga a Bert Hellinger Instituut Nederland
+    - year: '2025'
+      text: Systemický koučing – Anton de Kroon (NL, 2 dni)
+    - year: '2026'
+      text: System Dynamics in Organisations – Anton de Kroon (NL, 2 dni)
+    - year: '2026'
+      text: Learning circle – Stephan Hausner (DE, 4 dni)
+    - year: '2026'
+      text: Speed koučing – Anton de Kroon (NL, 2 dni)
+    - year: '2026'
+      text: System Dynamics in Organisations – Ruedi Eggerschwiler (CH, 2 dni)
+
+- id: clenstvo
+  title: Členstvo a ocenenia
+  order: 6
+  items:
+    - text: Člen Slovenskej komory psychológov
+    - year: '2004'
+      text: Zakladajúci člen Českej asociácie koučov
+    - year: '2006'
+      text: Zakladajúci člen Slovenskej asociácie koučov
+    - year: '2007'
+      text: Člen vedenia International Coaching Federation Slovak Chapter 2009 – 2014 (prezident v rokoch 2010 a 2011, viceprezident 2009)
+    - year: '2019'
+      text: Zakladajúci člen iSPAK (Inštitút systemickej práce a konštelácií)
+    - year: '2019'
+      text: Finalista odbornej ankety Kouč roka 2018
+    - year: '2020'
+      text: Víťaz odbornej ankety Kouč roka 2019
+    - year: '2025'
+      text: Členstvo v EMCC (European Mentoring and Coaching Council)

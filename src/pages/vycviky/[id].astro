@@ -10,6 +10,8 @@ import CtaBanner from '../../components/CtaBanner.astro';
 import Icon from '../../components/Icon.astro';
 import daliborPhoto from '../../assets/people/dalibor.jpg';
 import helenaPhoto from '../../assets/people/helena.jpg';
+import antonPhoto from '../../assets/people/anton-de-kroon.jpg';
+import ruediPhoto from '../../assets/people/ruedi-eggerschwiler.jpg';
 import { site } from '../../config/site';
 import { breadcrumbs, course as courseSchema } from '../../lib/schema';
 
@@ -36,6 +38,14 @@ const lecturerBios: Record<string, { photo: ImageMetadata; bio: string }> = {
   'Helena Bednařík Ballová': {
     photo: helenaPhoto,
     bio: 'Zakladateľka Inštitútu systemickej práce a konštelácií (iSPAK), pod ktorým organizuje a vedie tréningy systemického prístupu a konštelácií pre budúcich lektorov aj pre všetkých, ktorých táto metóda zaujíma.',
+  },
+  'Anton de Kroon': {
+    photo: antonPhoto,
+    bio: 'Hosťujúci lektor z Holandska. Od začiatku tohto storočia sa venuje systemicko-fenomenologickej práci a špecializuje sa na jej prenos do bežného rozhovoru v konzultantskom a koučovacom procese. V rokoch 2007 – 2020 viedol výcviky s holandským Inštitútom Berta Hellingera.',
+  },
+  'Ruedi Eggerschwiler': {
+    photo: ruediPhoto,
+    bio: 'Hosťujúci lektor zo Švajčiarska. Viac ako 30 rokov sa venuje psychológii, terapii, systemickej práci, procesu životnej integrácie (LIP), kontemplácii a zenu. Vo výcviku predstaví, ako pracovať s modelom LIP v organizáciách.',
   },
 };
 ---
@@ -175,7 +185,7 @@ const lecturerBios: Record<string, { photo: ImageMetadata; bio: string }> = {
   <section class="section bg-sand-100/60" aria-labelledby="dalsie">
     <div class="container-page">
       <h2 id="dalsie" class="text-3xl font-semibold md:text-4xl">Ďalšie výcviky</h2>
-      <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {others.map((c, i) => <CourseCard course={c} index={i} />)}
       </div>
     </div>

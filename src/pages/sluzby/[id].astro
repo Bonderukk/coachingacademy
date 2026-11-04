@@ -41,6 +41,7 @@ const others = all.filter((s) => s.id !== service.id).slice(0, 3);
           widths={[400, 800]}
           sizes="(min-width: 1024px) 400px, 100vw"
           class="aspect-[4/5] w-full rounded-[2rem] object-cover"
+          style={`object-position: ${data.imagePosition}`}
         />
       </div>
     </div>

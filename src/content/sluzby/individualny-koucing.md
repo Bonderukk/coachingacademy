@@ -4,8 +4,9 @@ metaTitle: Individuálny koučing a mentoring pre manažérov | Bratislava
 description: Individuálny koučing a mentoring pre majiteľov firiem, manažérov a talenty. Psychológ a MCC kouč Dalibor Bednařík – viac ako 2 500 hodín koučingu.
 summary: Priestor vyjadriť, rozobrať, vyjasniť a vyriešiť témy, ktoré sa vám opakujú alebo sú pre vás nové. Pre majiteľov firiem, manažérov a talenty.
 order: 1
-image: ../../assets/services/individualny.jpg
-imageAlt: Dalibor Bednařík počas koučovacieho stretnutia
+image: ../../assets/people/dalibor-mcc.jpg
+imageAlt: Dalibor Bednařík, kouč s certifikáciou ICF Master Certified Coach (MCC)
+imagePosition: top
 cta: Objednať koučing
 ---
 

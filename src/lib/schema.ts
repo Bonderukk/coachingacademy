@@ -83,6 +83,13 @@ export function service(entry: CollectionEntry<'sluzby'>) {
   };
 }
 
+// Printed books ship within Slovakia for the same flat rate as the KOUČING book.
+const shippingDetails = {
+  '@type': 'OfferShippingDetails',
+  shippingRate: { '@type': 'MonetaryAmount', value: book.shipping, currency: book.currency },
+  shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'SK' },
+};
+
 export function bookProduct(imageUrl: string, description: string) {
   return {
     '@context': 'https://schema.org',
@@ -101,11 +108,35 @@ export function bookProduct(imageUrl: string, description: string) {
       priceCurrency: book.currency,
       availability: book.preorder ? 'https://schema.org/PreOrder' : 'https://schema.org/InStock',
       seller: { '@id': organization['@id'] },
-      shippingDetails: {
-        '@type': 'OfferShippingDetails',
-        shippingRate: { '@type': 'MonetaryAmount', value: book.shipping, currency: book.currency },
-        shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'SK' },
-      },
+      shippingDetails,
     },
+  };
+}
+
+/** A book from the iSPAK range (src/content/knihy) – one offer per format. */
+export function storeBook(entry: CollectionEntry<'knihy'>, imageUrl: string) {
+  const { title, subtitle, authors, publisher, description, variants } = entry.data;
+  const url = abs(`/knihy/${entry.id}`);
+  return {
+    '@context': 'https://schema.org',
+    '@type': ['Book', 'Product'],
+    name: title,
+    alternativeHeadline: subtitle,
+    author: authors.map((name) => ({ '@type': 'Person', name })),
+    publisher: { '@type': 'Organization', name: publisher },
+    inLanguage: 'sk',
+    image: abs(imageUrl),
+    description,
+    url,
+    offers: variants.map((variant) => ({
+      '@type': 'Offer',
+      name: variant.label,
+      url,
+      price: variant.price,
+      priceCurrency: book.currency,
+      availability: 'https://schema.org/InStock',
+      seller: { '@id': organization['@id'] },
+      ...(!variant.digital && { shippingDetails }),
+    })),
   };
 }

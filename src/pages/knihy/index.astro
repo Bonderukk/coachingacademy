@@ -1,0 +1,41 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import BookPromo from '../../components/BookPromo.astro';
+import BookCard from '../../components/BookCard.astro';
+import { breadcrumbs } from '../../lib/schema';
+
+const books = (await getCollection('knihy')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout
+  title="Knihy o koučingu a systemickej práci"
+  description="Kniha KOUČING od Dalibora Bednaříka a knihy o systemickej práci z vydavateľstva iSPAK – tlačené aj v PDF, s doručením na Slovensku."
+  jsonLd={breadcrumbs([{ name: 'Knihy', path: '/knihy' }])}
+>
+  <PageHero
+    eyebrow="Obchod"
+    title="Knihy"
+    lead="Kniha KOUČING od Dalibora Bednaříka a knihy o systemickej práci, ktoré vydal Inštitút systemickej práce a konštelácií (iSPAK)."
+    breadcrumbs={[{ label: 'Knihy' }]}
+  />
+
+  <div class="pt-20 md:pt-28"><BookPromo /></div>
+
+  <section class="section pt-0" aria-labelledby="ispak">
+    <div class="container-page">
+      <div data-reveal class="max-w-2xl">
+        <p class="eyebrow">Vydavateľstvo iSPAK</p>
+        <h2 id="ispak" class="mt-3 text-4xl font-semibold md:text-5xl">Knihy o systemickej práci</h2>
+        <p class="mt-4 text-lg text-muted">
+          Slovenské vydania kníh lektorov holandského Inštitútu Berta Hellingera – o organizáciách, o rodine a o systemickom
+          koučingu.
+        </p>
+      </div>
+      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {books.map((book) => <BookCard book={book} />)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

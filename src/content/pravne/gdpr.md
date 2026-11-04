@@ -12,13 +12,13 @@ Uvedené predpisy nahradil nový zákon č. 18/2018 Z. z. o ochrane osobných ú
 
 ### Prevádzkovateľ
 
-Coaching Academy, s.r.o., IČO: 36 674 257, so sídlom Šuňavcova 9, 831 02 Bratislava, SR, zapísaná v Obchodnom registri Okresného súdu Bratislava 1, oddiel: Sro, vložka číslo: 42258/B, v zastúpení konateľom Mgr. Daliborom Bednaříkom.
+Coaching Academy, s.r.o., IČO: 36 674 257, so sídlom Bajkalská 45E, 821 05 Bratislava, SR, zapísaná v Obchodnom registri Okresného súdu Bratislava 1, oddiel: Sro, vložka číslo: 42258/B, v zastúpení konateľom Mgr. Daliborom Bednaříkom.
 
 ### Všeobecne
 
 Pre spoločnosť Coaching Academy s.r.o. je ochrana a bezpečnosť Vašich osobných údajov dôležitá a záleží nám na ich ochrane ako aj na zrozumiteľnom informovaní o tom, aké údaje zhromažďujeme a ako ich spracúvame. Pri každom kroku sa spoločnosť Coaching Academy s.r.o. riadi platnou legislatívou.
 
-Ak máte akékoľvek ďalšie otázky týkajúce sa spracovania Vašich osobných údajov, môžete nás skontaktovať v súvislosti so spracovávaním Vašich osobných údajov, zaslaním e-mailu na info@coachingacademy.sk alebo prostredníctvom pošty na adresu Coaching Academy s.r.o., Šuňavcova 9, 831 02 Bratislava.
+Ak máte akékoľvek ďalšie otázky týkajúce sa spracovania Vašich osobných údajov, môžete nás skontaktovať v súvislosti so spracovávaním Vašich osobných údajov, zaslaním e-mailu na info@coachingacademy.sk alebo prostredníctvom pošty na adresu Coaching Academy s.r.o., Bajkalská 45E, 821 05 Bratislava.
 
 ### Definícia pojmov
 

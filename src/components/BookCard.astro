@@ -1,0 +1,40 @@
+---
+import { url } from '../lib/url';
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import Icon from './Icon.astro';
+import { formatPrice } from '../config/site';
+
+interface Props {
+  book: CollectionEntry<'knihy'>;
+}
+
+const { book } = Astro.props;
+const { title, subtitle, authors, image, variants } = book.data;
+const priceFrom = Math.min(...variants.map((v) => v.price));
+---
+
+<article class="card group relative flex flex-col overflow-hidden transition duration-300 hover:shadow-xl hover:shadow-brand-950/5 motion-safe:hover:-translate-y-1">
+  <div class="aspect-[4/3] overflow-hidden bg-sand-100">
+    <Image
+      src={image}
+      alt=""
+      widths={[400, 800]}
+      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+      class="size-full object-cover transition duration-500 group-hover:scale-105"
+    />
+  </div>
+  <div class="flex flex-1 flex-col p-6">
+    <p class="text-xs font-semibold tracking-[0.12em] text-brand-700 uppercase">{authors.join(' & ')}</p>
+    <h3 class="mt-2 text-xl leading-snug font-semibold">
+      <a href={url(`/knihy/${book.id}`)} class="after:absolute after:inset-0">{title}</a>
+    </h3>
+    <p class="mt-2 flex-1 text-[15px] leading-relaxed text-muted">{subtitle}</p>
+    <div class="mt-5 flex items-center justify-between border-t border-sand-200 pt-4 text-[15px]">
+      <span class="text-muted">od <strong class="text-brand-950">{formatPrice(priceFrom)}</strong></span>
+      <span class="inline-flex items-center gap-1.5 font-semibold text-brand-900">
+        Viac <Icon name="arrow-right" class="size-4 transition-transform group-hover:translate-x-1" />
+      </span>
+    </div>
+  </div>
+</article>
