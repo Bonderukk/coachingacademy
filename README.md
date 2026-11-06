@@ -29,6 +29,7 @@ To make fnm switch versions automatically, add this line to your PowerShell `$PR
 | Change…                                     | Edit                                     |
 | ------------------------------------------- | ---------------------------------------- |
 | Course texts, prices, dates                 | `src/content/vycviky/*.md`               |
+| Course sign-up Google Form                  | `signupUrl` in `src/content/vycviky/*.md` |
 | Service pages                               | `src/content/sluzby/*.md`                |
 | Testimonials (`featured: true` = homepage)  | `src/content/referencie.yaml`            |
 | iSPAK books: texts, formats, prices         | `src/content/knihy/*.md`                 |

@@ -5,6 +5,7 @@ metaTitle: ICF akreditovaný koučovací výcvik LEVEL 1 (ACC) v Bratislave
 description: Koučovací výcvik akreditovaný ICF s prípravou na certifikáciu ACC – 98 hodín, 5 modulov v Bratislave a 10 mentoringov. Vedie MCC kouč Dalibor Bednařík.
 summary: CORE + 10 mentoringov k ACC. Pre záujemcov o profesionálnu úroveň koučovania a pre smerujúcich k medzinárodnej certifikácii ICF na úrovni ACC.
 order: 2
+signupUrl: https://docs.google.com/forms/d/e/1FAIpQLSfyT3gVu0FIhcc4f1-YYv0LtvoxkQUBjAvLL4mrtgpSbXXrZA/viewform
 badge: ../../assets/badges/icf-level-1.png
 facts:
   - label: Rozsah

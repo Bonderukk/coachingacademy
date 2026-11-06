@@ -5,6 +5,7 @@ metaTitle: Výcvik systemického koučingu v Bratislave
 description: Výcvik systemického koučingu pre koučov, konzultantov a poradcov – 5 dvojdňových modulov a online mentoring. Lektori Helena Bednařík Ballová a Dalibor Bednařík.
 summary: Koučing zameraný na prácu so systémami, ktorých sme súčasťou. Dôležitý pre opakujúce sa situácie a situácie, kde racionalita jednoducho nestačí.
 order: 4
+signupUrl: https://docs.google.com/forms/d/e/1FAIpQLSfIxXv4WuK1SOiwrOMF5jedXryF2Ya_y6OGXY5jJGSyESYEEw/viewform
 image: ../../assets/images/figurky.jpg
 facts:
   - label: Formát

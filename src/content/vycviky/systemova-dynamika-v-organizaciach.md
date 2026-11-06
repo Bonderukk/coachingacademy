@@ -5,6 +5,7 @@ metaTitle: Výcvik Systémová dynamika v organizáciách | iSPAK
 description: Výcvik systemickej práce a organizačných konštelácií pre manažérov, konzultantov, HR a koučov. 4 moduly po 4 dni so slovenskými aj zahraničnými lektormi.
 summary: Systemický pohľad na firmy a tímy – ako rozpoznať skryté dynamiky v organizácii a pracovať s nimi, s konšteláciami aj bez nich.
 order: 5
+signupUrl: https://docs.google.com/forms/d/e/1FAIpQLSf7gySKrCkRlHFdQejA9Gci6CyRVTvjLYLfQrqr4NC6kSCZvg/viewform
 image: ../../assets/images/systemova-dynamika.jpg
 facts:
   - label: Rozsah

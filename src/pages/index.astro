@@ -10,6 +10,7 @@ import CtaBanner from '../components/CtaBanner.astro';
 import Icon from '../components/Icon.astro';
 import portrait from '../assets/people/dalibor-hero.jpg';
 import badgeMcc from '../assets/badges/icf-mcc.png';
+import badgeMcs from '../assets/badges/icf-mcs.png';
 import badgeLevel1 from '../assets/badges/icf-level-1.png';
 import badgeLevel2 from '../assets/badges/icf-level-2.png';
 import badgePcic from '../assets/badges/pcic.png';
@@ -24,6 +25,7 @@ const testimonials = (await getCollection('referencie')).filter((t) => t.data.fe
 
 const badges = [
   { src: badgeMcc, alt: 'ICF Master Certified Coach (MCC)' },
+  { src: badgeMcs, alt: 'ICF Mentor Coach Specialization (MCS), úroveň ACC' },
   { src: badgeLevel1, alt: 'ICF Level 1 – akreditované koučovacie vzdelávanie' },
   { src: badgeLevel2, alt: 'ICF Level 2 – akreditované koučovacie vzdelávanie' },
   { src: badgePcic, alt: 'PCIC – Professional Certified Integrative Coach' },
@@ -93,8 +95,8 @@ const jsonLd = [
             <Icon name="arrow-right" class="size-4 motion-safe:animate-nudge" />
           </a>
         </div>
-        <!-- phones: four equal columns so the row never wraps; larger screens: fixed-size badges -->
-        <ul class="mt-12 grid max-w-sm grid-cols-4 items-center gap-3 sm:flex sm:max-w-none sm:flex-wrap sm:gap-6" aria-label="Akreditácie a certifikácie">
+        <!-- five equal columns at every width, so the row scales with the column and never wraps -->
+        <ul class="mt-12 grid max-w-xl grid-cols-5 items-center gap-2 sm:gap-5" aria-label="Akreditácie a certifikácie">
           {
             badges.map((b, i) => (
               <li class="motion-safe:animate-fade-up" style={`animation-delay: ${450 + i * 90}ms`}>
@@ -103,7 +105,7 @@ const jsonLd = [
                   alt={b.alt}
                   width={224}
                   height={224}
-                  class="aspect-square w-full object-contain transition duration-300 motion-safe:hover:-translate-y-1 motion-safe:hover:-rotate-6 sm:size-24 lg:size-28"
+                  class="aspect-square w-full object-contain transition duration-300 motion-safe:hover:-translate-y-1 motion-safe:hover:-rotate-6"
                 />
               </li>
             ))

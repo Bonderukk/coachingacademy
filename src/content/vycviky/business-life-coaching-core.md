@@ -5,6 +5,7 @@ metaTitle: Koučovací výcvik Business & Life Coaching CORE v Bratislave
 description: Základný koučovací výcvik akreditovaný ICF – 5 dvojdňových modulov v Bratislave, 88 hodín, certifikát PCIC. Vedie psychológ a MCC kouč Dalibor Bednařík.
 summary: 5 × 2 dni pre manažérov, lídrov, podnikateľov, špecialistov a všetkých, ktorí chcú využiť koučovací prístup vo svojej praxi či pre sebarozvoj. Certifikát PCIC.
 order: 1
+signupUrl: https://docs.google.com/forms/d/e/1FAIpQLSfyT3gVu0FIhcc4f1-YYv0LtvoxkQUBjAvLL4mrtgpSbXXrZA/viewform
 badge: ../../assets/badges/pcic.png
 facts:
   - label: Rozsah

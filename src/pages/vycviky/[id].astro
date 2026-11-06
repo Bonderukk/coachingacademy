@@ -28,7 +28,9 @@ const others = (await getCollection('vycviky')).filter((c) => c.id !== course.id
 const testimonials = (await getCollection('referencie'))
   .filter((t) => ['marcela-slimakova', 'michelle-krivda', 'radka-kralovicova'].includes(t.id));
 
-const signupHref = url(`/kontakt?tema=${encodeURIComponent(data.title)}#formular`);
+// Sign-ups go to the course's Google Form (dad keeps applicants in a spreadsheet); otherwise to the contact form.
+const signupHref = data.signupUrl ?? url(`/kontakt?tema=${encodeURIComponent(data.title)}#formular`);
+const signupAttrs = data.signupUrl ? { target: '_blank', rel: 'noopener' } : {};
 
 const lecturerBios: Record<string, { photo: ImageMetadata; bio: string }> = {
   'Dalibor Bednařík': {
@@ -57,7 +59,7 @@ const lecturerBios: Record<string, { photo: ImageMetadata; bio: string }> = {
 >
   <PageHero eyebrow={data.eyebrow} title={data.title} lead={data.summary} breadcrumbs={[{ label: 'Výcviky', href: '/vycviky' }, { label: data.title }]}>
     <div class="mt-8 flex flex-wrap gap-3">
-      <a href={signupHref} class="btn-primary">Prihlásiť sa</a>
+      <a href={signupHref} {...signupAttrs} class="btn-primary">Prihlásiť sa</a>
       {data.schedules.length > 0 && <a href="#terminy" class="btn-secondary"><Icon name="calendar" class="size-4" />Termíny</a>}
     </div>
     {
@@ -104,7 +106,7 @@ const lecturerBios: Record<string, { photo: ImageMetadata; bio: string }> = {
               ))
             }
           </ul>
-          <a href={signupHref} class="btn-primary mt-7 w-full">Prihlásiť sa na výcvik</a>
+          <a href={signupHref} {...signupAttrs} class="btn-primary mt-7 w-full">Prihlásiť sa na výcvik</a>
           <p class="mt-5 text-sm text-muted">
             Máte otázku? Zavolajte na <a href={`tel:${site.phone.replace(/\s/g, '')}`} class="whitespace-nowrap text-brand-800 underline">{site.phone}</a>{' '}
             alebo napíšte na <a href={`mailto:${site.email}`} class="text-brand-800 underline">{site.email}</a>.
@@ -140,7 +142,7 @@ const lecturerBios: Record<string, { photo: ImageMetadata; bio: string }> = {
               </div>
             ))}
           </div>
-          <a href={signupHref} class="btn-primary mt-10">Prihlásiť sa</a>
+          <a href={signupHref} {...signupAttrs} class="btn-primary mt-10">Prihlásiť sa</a>
         </div>
       </section>
     )

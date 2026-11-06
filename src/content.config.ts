@@ -28,6 +28,8 @@ const vycviky = defineCollection({
         .default([]),
       startDate: z.coerce.date().optional(),
       priceFrom: z.number().optional(),
+      // Google Form for sign-ups (answers land in dad's spreadsheet). Without it, "Prihlásiť sa" opens the contact form.
+      signupUrl: z.url().optional(),
       lecturers: z.array(z.string()).default(['Dalibor Bednařík']),
     }),
 });

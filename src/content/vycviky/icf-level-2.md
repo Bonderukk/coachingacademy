@@ -5,6 +5,7 @@ metaTitle: ICF koučovací výcvik LEVEL 2 – príprava na PCC v Bratislave
 description: Pokročilý ICF akreditovaný koučovací výcvik s prípravou na certifikáciu PCC. Polarity, GROW a systemicko-fenomenologický prístup – aj ako balík ALL in ONE.
 summary: LEVEL 1 + 5 dní k PCC. Pre záujemcov o pokročilú úroveň koučovania a pre smerujúcich k medzinárodnej ICF certifikácii na úrovni PCC.
 order: 3
+signupUrl: https://docs.google.com/forms/d/e/1FAIpQLScXbQGfUQ6js5l4ry0xn8713p3_tGYhizmoYS25_f2vNKtc2w/viewform
 badge: ../../assets/badges/icf-level-2.png
 facts:
   - label: Pre absolventov LEVEL 1
