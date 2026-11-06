@@ -67,9 +67,11 @@ const readers = [
     <div class="container-page grid items-center gap-12 py-14 md:py-20 lg:grid-cols-2">
       <!-- own full-width row, so on phones it sits above the book image rather than under it -->
       <nav aria-label="Omrvinková navigácia" class="-mb-6 text-sm text-muted lg:col-span-2">
-        <a href={url('/')} class="inline-block py-1 hover:text-brand-900">Domov</a> <span aria-hidden="true">/</span>
-        <a href={url('/knihy')} class="inline-block py-1 hover:text-brand-900">Knihy</a> <span aria-hidden="true">/</span>
-        <span aria-current="page" class="text-ink">KOUČING</span>
+        <ol class="-my-1 flex flex-wrap items-center gap-x-1.5">
+          <li><a href={url('/')} class="inline-block py-1 hover:text-brand-900">Domov</a></li>
+          <li class="flex items-center gap-1.5"><span aria-hidden="true">/</span><a href={url('/knihy')} class="inline-block py-1 hover:text-brand-900">Knihy</a></li>
+          <li class="flex items-center gap-1.5"><span aria-hidden="true">/</span><span aria-current="page" class="text-ink">KOUČING</span></li>
+        </ol>
       </nav>
       <div class="relative motion-safe:animate-fade-in">
         <Image
