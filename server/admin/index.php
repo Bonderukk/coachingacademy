@@ -165,6 +165,8 @@ function hydrate(array $row): array
     foreach (['unit_cents', 'shipping_cents', 'total_cents'] as $key) {
         $row[$key] = $row[$key] === null ? null : (int) $row[$key];
     }
+    // Orders stored before delivery options existed were sent by post (or as a PDF).
+    $row['delivery'] = (string) ($row['delivery'] ?? '') !== '' ? $row['delivery'] : ($row['digital'] ? 'PDF e-mailom' : 'Poštou na Slovensku');
     return $row;
 }
 
@@ -268,12 +270,12 @@ if ($action === 'export') {
     ca_event($pdo, $user, 'admin.export', null, 'počet objednávok: ' . count($orders));
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename="objednavky-' . date('Y-m-d') . '.csv"');
-    echo "\xEF\xBB\xBF" . csv_line(['Číslo', 'Dátum', 'Stav', 'Kniha', 'Ks', 'Suma (€)', 'Meno', 'E-mail', 'Telefón', 'Ulica', 'PSČ', 'Mesto', 'Poznámka']);
+    echo "\xEF\xBB\xBF" . csv_line(['Číslo', 'Dátum', 'Stav', 'Kniha', 'Ks', 'Doručenie', 'Suma (€)', 'Meno', 'E-mail', 'Telefón', 'Ulica', 'PSČ', 'Mesto', 'Poznámka']);
     foreach ($orders as $order) {
         $customer = $order['customer'];
         echo csv_line([
             $order['number'], ca_local($order['created_at']), CA_STATUSES[$order['status']] ?? $order['status'], $order['item'], $order['quantity'],
-            $order['total_cents'] === null ? '' : number_format($order['total_cents'] / 100, 2, ',', ''),
+            $order['delivery'], $order['total_cents'] === null ? '' : number_format($order['total_cents'] / 100, 2, ',', ''),
             $customer['name'] ?? '', $customer['email'] ?? '', $customer['phone'] ?? '', $customer['street'] ?? '', $customer['zip'] ?? '',
             $customer['city'] ?? '', $customer['note'] ?? '',
         ]);
@@ -348,8 +350,7 @@ if ($action === 'order') {
 
     $price = ca_money($order['total_cents']);
     if ($order['unit_cents'] !== null) {
-        $price .= ' <span class="muted">(' . ca_money($order['unit_cents']) . ' × ' . (int) $order['quantity']
-            . ($order['digital'] ? ', bez poštovného' : ' + poštovné ' . ca_money($order['shipping_cents'])) . ')</span>';
+        $price .= ' <span class="muted">(' . ca_e(ca_price_breakdown($order['unit_cents'], (int) $order['quantity'], $order['shipping_cents'])) . ')</span>';
     }
 
     if ($gone) {
@@ -361,8 +362,9 @@ if ($action === 'order') {
             . '<dt>Meno</dt><dd>' . ca_e($customer['name'] ?? '') . '</dd>'
             . '<dt>E-mail</dt><dd><a href="' . ca_e($mailto) . '">' . ca_e($email) . '</a></dd>'
             . (($customer['phone'] ?? '') !== '' ? '<dt>Telefón</dt><dd>' . ca_e($customer['phone']) . '</dd>' : '')
-            . ($order['digital'] ? '<dt>Doručenie</dt><dd>PDF e-mailom</dd>'
-                : '<dt>Adresa</dt><dd>' . ca_e($customer['street'] ?? '') . '<br>' . ca_e(($customer['zip'] ?? '') . ' ' . ($customer['city'] ?? '')) . '</dd>')
+            . (($customer['street'] ?? '') !== ''
+                ? '<dt>Adresa</dt><dd>' . ca_e($customer['street']) . '<br>' . ca_e(($customer['zip'] ?? '') . ' ' . ($customer['city'] ?? '')) . '</dd>'
+                : '')
             . (($customer['note'] ?? '') !== '' ? '<dt>Poznámka</dt><dd class="pre">' . ca_e($customer['note']) . '</dd>' : '')
             . '</dl><p><a class="button ghost" href="' . ca_e($mailto) . '">Napísať zákazníkovi</a></p>';
     }
@@ -381,6 +383,7 @@ if ($action === 'order') {
         . ($order['price_note'] ? '<p class="alert" role="alert">' . ca_e($order['price_note']) . '</p>' : '')
         . '<div class="grid"><section class="card"><h2>Objednávka</h2><dl>'
         . '<dt>Kniha</dt><dd>' . ca_e($order['item']) . '</dd><dt>Počet kusov</dt><dd>' . (int) $order['quantity'] . '</dd>'
+        . '<dt>Doručenie</dt><dd>' . ca_e($order['delivery']) . '</dd>'
         . '<dt>Suma</dt><dd>' . $price . '</dd><dt>Platba</dt><dd>prevodom, variabilný symbol ' . ca_e($order['number']) . '</dd></dl>'
         . '<div class="row">' . $buttons . '</div></section>'
         . '<section class="card"><h2>Zákazník</h2>' . $who . '</section></div>'
@@ -419,7 +422,9 @@ foreach ($orders as $order) {
     $link = '?a=order&amp;id=' . $order['id'] . ($filterQuery ? '&amp;' . ca_e($filterQuery) : '');
     $rows .= '<tr><td data-label="Číslo"><a href="' . $link . '"><b>' . ca_e($order['number']) . '</b></a></td>'
         . '<td data-label="Dátum">' . ca_e(ca_local($order['created_at'], 'j. n. Y')) . '</td>'
-        . '<td data-label="Kniha">' . ca_e($order['item']) . ' × ' . (int) $order['quantity'] . ($order['price_note'] ? ' <span class="warn" title="' . ca_e($order['price_note']) . '">skontrolovať cenu</span>' : '') . '</td>'
+        . '<td data-label="Kniha">' . ca_e($order['item']) . ' × ' . (int) $order['quantity']
+        . ' <span class="muted">· ' . ca_e(mb_strtolower($order['delivery'])) . '</span>'
+        . ($order['price_note'] ? ' <span class="warn" title="' . ca_e($order['price_note']) . '">skontrolovať cenu</span>' : '') . '</td>'
         . '<td data-label="Suma" class="num">' . ca_money($order['total_cents']) . '</td>'
         . '<td data-label="Zákazník">' . ($order['anonymized_at'] !== null ? '<span class="muted">údaje vymazané</span>'
             : ca_e($customer['name'] ?? '') . (($customer['city'] ?? '') !== '' ? '<span class="muted">, ' . ca_e($customer['city']) . '</span>' : '')) . '</td>'

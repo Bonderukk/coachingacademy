@@ -30,3 +30,7 @@ fotkyalogananovyweb1/
 
 # server-side secrets for the form endpoint (recipients, SMTP password)
 server/form-config.php*
+
+# exported customer data (e.g. builder orders saved from the browser) must never end up in this public repo
+/orders*.html
+/objednavky*

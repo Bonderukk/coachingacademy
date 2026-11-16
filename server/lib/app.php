@@ -203,15 +203,35 @@ function ca_db(): ?PDO
     return $pdo;
 }
 
-/** Creates the tables on first use. */
+/** Database layout version. 2 added ca_orders.delivery. */
+const CA_SCHEMA_VERSION = 2;
+
+/** Creates the tables on first use and upgrades older layouts. */
 function ca_schema(PDO $pdo): void
 {
+    $version = 0;
     try {
-        if ((int) $pdo->query("SELECT v FROM ca_meta WHERE k = 'schema'")->fetchColumn() >= 1) {
-            return;
-        }
+        $version = (int) $pdo->query("SELECT v FROM ca_meta WHERE k = 'schema'")->fetchColumn();
     } catch (PDOException $e) {
         // First run: the tables do not exist yet.
+    }
+    if ($version >= CA_SCHEMA_VERSION) {
+        return;
+    }
+    if ($version >= 1) {
+        // 1 → 2: how the order is delivered (post, personal pickup, PDF by e-mail).
+        if (!$pdo->query("SHOW COLUMNS FROM ca_orders LIKE 'delivery'")->fetch()) {
+            try {
+                $pdo->exec('ALTER TABLE ca_orders ADD COLUMN delivery VARCHAR(60) NULL AFTER digital');
+            } catch (PDOException $e) {
+                // Another request added it at the same moment.
+                if (!$pdo->query("SHOW COLUMNS FROM ca_orders LIKE 'delivery'")->fetch()) {
+                    throw $e;
+                }
+            }
+        }
+        $pdo->exec("UPDATE ca_meta SET v = '" . CA_SCHEMA_VERSION . "' WHERE k = 'schema'");
+        return;
     }
     $tail = ' ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
     $pdo->exec('CREATE TABLE IF NOT EXISTS ca_meta (
@@ -227,6 +247,7 @@ function ca_schema(PDO $pdo): void
         product_id VARCHAR(80) NOT NULL,
         item VARCHAR(255) NOT NULL,
         digital TINYINT(1) NOT NULL DEFAULT 0,
+        delivery VARCHAR(60) NULL,
         quantity SMALLINT UNSIGNED NOT NULL,
         unit_cents INT UNSIGNED NULL,
         shipping_cents INT UNSIGNED NULL,
@@ -255,7 +276,7 @@ function ca_schema(PDO $pdo): void
         at INT UNSIGNED NOT NULL,
         KEY idx_lookup (bucket, ip_hash, at)
     )' . $tail);
-    $pdo->exec("INSERT INTO ca_meta (k, v) VALUES ('schema', '1') ON DUPLICATE KEY UPDATE v = '1'");
+    $pdo->exec("INSERT INTO ca_meta (k, v) VALUES ('schema', '" . CA_SCHEMA_VERSION . "') ON DUPLICATE KEY UPDATE v = VALUES(v)");
 }
 
 /** Adds a line to the activity log. `$detail` must never contain customer data. */
@@ -319,18 +340,18 @@ function ca_order_number(int $id, string $createdAtUtc): string
 /**
  * Stores an order and returns its id and number.
  *
- * @param array $order    product_id, item, digital, quantity, unit_cents, shipping_cents, total_cents, price_note
+ * @param array $order    product_id, item, digital, delivery, quantity, unit_cents, shipping_cents, total_cents, price_note
  * @param array $customer name, email, phone, street, zip, city, note (stored encrypted)
  */
 function ca_order_create(PDO $pdo, array $order, array $customer): array
 {
     $now = ca_now();
     $pdo->prepare('INSERT INTO ca_orders
-        (created_at, status, status_at, product_id, item, digital, quantity, unit_cents, shipping_cents, total_cents, price_note, customer)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+        (created_at, status, status_at, product_id, item, digital, delivery, quantity, unit_cents, shipping_cents, total_cents, price_note, customer)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
         ->execute([
-            $now, 'new', $now, $order['product_id'], $order['item'], $order['digital'] ? 1 : 0, $order['quantity'],
-            $order['unit_cents'], $order['shipping_cents'], $order['total_cents'], $order['price_note'], ca_encrypt($customer),
+            $now, 'new', $now, $order['product_id'], $order['item'], $order['digital'] ? 1 : 0, mb_substr($order['delivery'], 0, 60),
+            $order['quantity'], $order['unit_cents'], $order['shipping_cents'], $order['total_cents'], $order['price_note'], ca_encrypt($customer),
         ]);
     $id = (int) $pdo->lastInsertId();
     ca_event($pdo, 'web', 'order.created', $id);
@@ -391,7 +412,47 @@ function ca_catalog_valid($data): bool
             }
         }
     }
+    // Delivery options are optional: price lists published before they existed have none.
+    if (isset($data['delivery'])) {
+        if (!is_array($data['delivery']) || !$data['delivery']) {
+            return false;
+        }
+        foreach ($data['delivery'] as $option) {
+            if (!is_array($option) || !isset($option['id'], $option['label'], $option['price']) || !is_string($option['id']) || !is_numeric($option['price'])) {
+                return false;
+            }
+        }
+    }
     return count($data['products']) > 0;
+}
+
+/**
+ * How a printed book can be delivered: [id => [label, price in euros, needs an address]].
+ * Taken from the price list; an older price list without them gets the same two options the site offers.
+ */
+function ca_delivery_options(?array $catalog): array
+{
+    if (isset($catalog['delivery'])) {
+        $options = [];
+        foreach ($catalog['delivery'] as $option) {
+            $options[$option['id']] = ['label' => (string) $option['label'], 'price' => (float) $option['price'], 'address' => !empty($option['address'])];
+        }
+        return $options;
+    }
+    $postage = isset($catalog['shipping']) ? (float) $catalog['shipping'] : 5.0;
+    return [
+        'posta' => ['label' => 'Poštou na Slovensku', 'price' => $postage, 'address' => true],
+        'osobne' => ['label' => 'Osobný odber', 'price' => 0.0, 'address' => false],
+    ];
+}
+
+/** "20 € × 2 + poštovné 5 €" for the e-mail and the administration. */
+function ca_price_breakdown(?int $unitCents, int $quantity, ?int $shippingCents): string
+{
+    if ($unitCents === null) {
+        return '';
+    }
+    return ca_money($unitCents) . ' × ' . $quantity . ($shippingCents ? ' + poštovné ' . ca_money($shippingCents) : '');
 }
 
 /**

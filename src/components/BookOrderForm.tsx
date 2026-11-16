@@ -1,5 +1,5 @@
 import { useEffect, useState, type SubmitEvent } from 'react';
-import type { OrderProduct } from '../lib/catalog';
+import type { DeliveryOption, OrderProduct } from '../lib/catalog';
 import { url } from '../lib/url';
 import { input, label } from './formStyles';
 
@@ -8,8 +8,8 @@ interface Props {
   endpoint?: string;
   email: string;
   products: OrderProduct[];
-  /** Postage for printed books, charged once per order. */
-  shipping: number;
+  /** Delivery choices for printed books; the first one is preselected. */
+  delivery: DeliveryOption[];
   /** Per product id: a sentence shown after that book was ordered, e.g. when a pre-ordered book will be sent. */
   notes?: Record<string, string>;
 }
@@ -19,7 +19,7 @@ type Status = 'idle' | 'sending' | 'sent' | 'error';
 const eur = (amount: number) =>
   new Intl.NumberFormat('sk-SK', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2, minimumFractionDigits: 0 }).format(amount);
 
-export default function BookOrderForm({ endpoint, email, products, shipping, notes = {} }: Props) {
+export default function BookOrderForm({ endpoint, email, products, delivery, notes = {} }: Props) {
   const options = products.flatMap((p) =>
     p.variants.map((v, i) => ({
       value: `${p.id}:${i}`,
@@ -33,6 +33,7 @@ export default function BookOrderForm({ endpoint, email, products, shipping, not
   const [status, setStatus] = useState<Status>('idle');
   const [choice, setChoice] = useState(options[0].value);
   const [quantity, setQuantity] = useState(1);
+  const [deliveryId, setDeliveryId] = useState(delivery[0].id);
   const [sentTo, setSentTo] = useState('');
   const [orderNumber, setOrderNumber] = useState('');
 
@@ -45,7 +46,11 @@ export default function BookOrderForm({ endpoint, email, products, shipping, not
 
   const item = options.find((o) => o.value === choice) ?? options[0];
   const count = Math.min(Math.max(Math.round(quantity) || 1, 1), 20);
-  const postage = item.digital ? 0 : shipping;
+  // A PDF goes by e-mail, so the delivery choice and the address only apply to printed books.
+  const chosen = delivery.find((d) => d.id === deliveryId) ?? delivery[0];
+  const postage = item.digital ? 0 : chosen.price;
+  const needsAddress = !item.digital && chosen.address;
+  const deliveryLabel = item.digital ? 'PDF pošleme e-mailom' : chosen.label;
   const total = item.price * count + postage;
 
   async function onSubmit(e: SubmitEvent<HTMLFormElement>) {
@@ -104,7 +109,10 @@ export default function BookOrderForm({ endpoint, email, products, shipping, not
       <input type="hidden" name="_form" value="order" />
       <input type="hidden" name="_produkt" value={item.productId} />
       <input type="hidden" name="_variant" value={item.variantIndex} />
+      <input type="hidden" name="_digital" value={item.digital ? '1' : '0'} />
       <input type="hidden" name="_subject" value={`Objednávka knihy: ${item.name}`} />
+      {/* Readable copy of the choice for the e-mail fallback; the endpoint uses `_doprava`. */}
+      <input type="hidden" name="doprava" value={deliveryLabel} />
       <input type="text" name="_gotcha" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
 
       <div className="flex gap-4 sm:col-span-2">
@@ -136,6 +144,37 @@ export default function BookOrderForm({ endpoint, email, products, shipping, not
         </div>
       </div>
 
+      {!item.digital && (
+        <fieldset className="sm:col-span-2">
+          <legend className={label}>Doručenie</legend>
+          <div className="mt-1.5 grid gap-3 sm:grid-cols-2">
+            {delivery.map((d) => (
+              <label
+                key={d.id}
+                className={`flex cursor-pointer items-start gap-3 rounded-xl border bg-white px-4 py-3 ${
+                  d.id === chosen.id ? 'border-brand-700 ring-2 ring-brand-700/15' : 'border-sand-300'
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="_doprava"
+                  value={d.id}
+                  checked={d.id === chosen.id}
+                  onChange={() => setDeliveryId(d.id)}
+                  className="mt-1 size-4 shrink-0 accent-brand-900"
+                />
+                <span>
+                  <span className="block font-medium text-brand-950">
+                    {d.label} <span className="font-normal text-muted">– {d.price ? eur(d.price) : 'zadarmo'}</span>
+                  </span>
+                  {d.note && <span className="mt-0.5 block text-sm text-muted">{d.note}</span>}
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      )}
+
       <div className="sm:col-span-2">
         <label htmlFor="meno" className={label}>Meno a priezvisko</label>
         <input id="meno" name="meno" required autoComplete="name" className={input} />
@@ -151,7 +190,7 @@ export default function BookOrderForm({ endpoint, email, products, shipping, not
         <input id="telefon" name="telefon" type="tel" autoComplete="tel" className={input} />
       </div>
 
-      {!item.digital && (
+      {needsAddress && (
         <>
           <div className="sm:col-span-2">
             <label htmlFor="ulica" className={label}>Ulica a číslo domu</label>
@@ -184,8 +223,8 @@ export default function BookOrderForm({ endpoint, email, products, shipping, not
             <dd>{eur(item.price * count)}</dd>
           </div>
           <div className="flex justify-between gap-4">
-            <dt className="text-muted">{item.digital ? 'PDF pošleme e-mailom' : 'Poštovné na Slovensku'}</dt>
-            <dd>{eur(postage)}</dd>
+            <dt className="text-muted">{deliveryLabel}</dt>
+            <dd>{postage ? eur(postage) : 'zadarmo'}</dd>
           </div>
           <div className="flex justify-between gap-4 border-t border-sand-300 pt-2.5 text-lg font-semibold text-brand-950">
             <dt>Spolu</dt>

@@ -76,7 +76,7 @@ Osobné údaje získané vyplnením kontaktného formulára na našej webovej st
 
 ### Objednávky kníh cez webovú stránku
 
-Pri objednávke knihy cez objednávkový formulár spracúvame Vaše meno a priezvisko, e-mailovú adresu, telefónne číslo (ak ho uvediete), doručovaciu adresu, obsah objednávky a prípadnú poznámku. Bez týchto údajov nie je možné objednávku vybaviť.
+Pri objednávke knihy cez objednávkový formulár spracúvame Vaše meno a priezvisko, e-mailovú adresu, telefónne číslo (ak ho uvediete), doručovaciu adresu (len pri doručení poštou), obsah objednávky, spôsob doručenia a prípadnú poznámku. Bez týchto údajov nie je možné objednávku vybaviť.
 
 | Účel | Právny základ podľa GDPR |
 | --- | --- |

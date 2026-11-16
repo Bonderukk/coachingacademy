@@ -100,7 +100,7 @@ const readers = [
             <span class="font-serif text-4xl font-semibold text-brand-950">{formatPrice(book.price + book.shipping)}</span>
             <span class="text-muted">vrátane poštovného na Slovensku</span>
           </div>
-          <p class="mt-1 text-sm text-muted">Kniha {formatPrice(book.price)} + doprava {formatPrice(book.shipping)}</p>
+          <p class="mt-1 text-sm text-muted">Kniha {formatPrice(book.price)} + doprava {formatPrice(book.shipping)}. Pri osobnom odbere {formatPrice(book.price)}.</p>
           <BuyBookButton class="mt-5 w-full sm:w-auto" />
           <ul class="mt-5 space-y-2 text-[15px] text-muted">
             <li class="flex gap-2.5">

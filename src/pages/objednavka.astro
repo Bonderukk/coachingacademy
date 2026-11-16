@@ -9,12 +9,12 @@ import Icon from '../components/Icon.astro';
 import { book, formatPrice, site } from '../config/site';
 import { getOrderCatalog } from '../lib/catalog';
 
-const { products, shipping } = await getOrderCatalog();
+const { products, delivery } = await getOrderCatalog();
 // Shown after ordering the KOUČING book while it is on pre-order.
-const notes: Record<string, string> = book.preorder ? { koucing: `Kniha ${book.shortTitle} vychádza v termíne ${book.releaseLabel}, odošleme ju hneď po vydaní.` } : {};
+const notes: Record<string, string> = book.preorder ? { koucing: `Kniha ${book.shortTitle} vychádza v termíne ${book.releaseLabel}, hneď po vydaní sa vám ozveme.` } : {};
 ---
 
-<BaseLayout title="Objednávka knihy" description="Objednávka kníh KOUČING a kníh o systemickej práci – platba prevodom, doručenie poštou na Slovensku." noindex>
+<BaseLayout title="Objednávka knihy" description="Objednávka kníh KOUČING a kníh o systemickej práci – platba prevodom, doručenie poštou na Slovensku alebo osobný odber." noindex>
   <PageHero
     eyebrow="Knihy"
     title="Objednávka knihy"
@@ -26,7 +26,7 @@ const notes: Record<string, string> = book.preorder ? { koucing: `Kniha ${book.s
     <div class="container-page grid grid-cols-1 gap-14 lg:grid-cols-[1fr_340px]">
       <div>
         <h2 class="sr-only">Objednávkový formulár</h2>
-        <BookOrderForm client:load endpoint={site.formEndpoint} email={site.email} products={products} shipping={shipping} notes={notes} />
+        <BookOrderForm client:load endpoint={site.formEndpoint} email={site.email} products={products} delivery={delivery} notes={notes} />
       </div>
 
       <aside class="space-y-4" aria-label="Ako prebieha objednávka">
@@ -35,13 +35,13 @@ const notes: Record<string, string> = book.preorder ? { koucing: `Kniha ${book.s
           <ol class="mt-4 space-y-3 text-[15px] text-muted">
             <li class="flex gap-3"><span class="font-semibold text-brand-900">1.</span>Odošlete objednávku cez formulár.</li>
             <li class="flex gap-3"><span class="font-semibold text-brand-900">2.</span>Do 2 pracovných dní vám e-mailom pošleme potvrdenie a údaje na platbu.</li>
-            <li class="flex gap-3"><span class="font-semibold text-brand-900">3.</span>Po prijatí platby knihu odošleme poštou (PDF verziu e-mailom).</li>
+            <li class="flex gap-3"><span class="font-semibold text-brand-900">3.</span>Po prijatí platby vám knihu pošleme poštou alebo si ju vyzdvihnete osobne. PDF verziu posielame e-mailom.</li>
           </ol>
         </div>
         <div class="card flex items-start gap-4 p-6">
           <span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-900"><Icon name="mail" /></span>
           <p class="text-[15px] text-muted">
-            Poštovné na Slovensku je {formatPrice(book.shipping)} za objednávku. Otázky? Napíšte na{' '}
+            Poštovné na Slovensku je {formatPrice(book.shipping)} za objednávku, osobný odber je zadarmo. Otázky? Napíšte na{' '}
             <a href={`mailto:${site.email}`} class="font-semibold text-brand-900 underline">{site.email}</a>.
           </p>
         </div>

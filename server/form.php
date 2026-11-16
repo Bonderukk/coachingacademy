@@ -152,6 +152,7 @@ if (posted('_form') === 'order') {
     // Price the order from the website's price list, never from what the browser sent.
     $productId = ca_one_line(posted('_produkt'), 80);
     $variantIndex = filter_var(posted('_variant'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 0, 'max_range' => 50]]);
+    $deliveryId = ca_one_line(posted('_doprava'), 40);
     $claimedTotal = ca_one_line(posted('cena_spolu'), 40);
     $product = null;
     $variant = null;
@@ -163,14 +164,20 @@ if (posted('_form') === 'order') {
         }
     }
 
+    // How the book gets to the customer. A form without a choice (an older copy of the page) means post.
+    $deliveryOptions = ca_delivery_options($catalog);
+    $byEmail = ['label' => 'PDF e-mailom', 'price' => 0.0, 'address' => false];
+
     if ($variant !== null) {
         $digital = !empty($variant['digital']);
+        $delivery = $digital ? $byEmail : ($deliveryOptions[$deliveryId] ?? reset($deliveryOptions));
         $unit = (int) round($variant['price'] * 100);
-        $shipping = $digital ? 0 : (int) round($catalog['shipping'] * 100);
+        $shipping = (int) round($delivery['price'] * 100);
         $order = [
             'product_id' => $productId,
             'item' => mb_substr(count($product['variants']) > 1 ? $product['title'] . ' – ' . $variant['label'] : $product['title'], 0, 255),
             'digital' => $digital,
+            'delivery' => $delivery['label'],
             'quantity' => $quantity,
             'unit_cents' => $unit,
             'shipping_cents' => $shipping,
@@ -183,11 +190,13 @@ if (posted('_form') === 'order') {
     } else {
         // The price list could not be loaded, or it does not know this book. Never lose the order:
         // keep what the browser sent and flag it for a manual check.
-        $digital = $customer['street'] === '' && $customer['city'] === '';
+        $digital = isset($_POST['_digital']) ? posted('_digital') === '1' : ($customer['street'] === '' && $customer['city'] === '');
+        $delivery = $digital ? $byEmail : ($deliveryOptions[$deliveryId] ?? reset($deliveryOptions));
         $order = [
             'product_id' => $productId,
             'item' => ca_one_line(posted('kniha'), 255) ?: 'Kniha (neuvedená)',
             'digital' => $digital,
+            'delivery' => $delivery['label'],
             'quantity' => $quantity,
             'unit_cents' => null,
             'shipping_cents' => null,
@@ -195,8 +204,13 @@ if (posted('_form') === 'order') {
             'price_note' => 'Cenu sa nepodarilo overiť podľa cenníka na webe. Skontrolujte ju.',
         ];
     }
-    if (!$order['digital'] && ($customer['street'] === '' || $customer['zip'] === '' || $customer['city'] === '')) {
+    $needsAddress = !$order['digital'] && $delivery['address'];
+    if ($needsAddress && ($customer['street'] === '' || $customer['zip'] === '' || $customer['city'] === '')) {
         respond(422, ['ok' => false, 'error' => 'invalid', 'field' => 'adresa']);
+    }
+    if (!$needsAddress) {
+        // Data minimisation: an address nobody needs is not kept.
+        $customer['street'] = $customer['zip'] = $customer['city'] = '';
     }
 
     // Store it. A database problem must not stop the order: it still goes out by e-mail.
@@ -220,10 +234,9 @@ if (posted('_form') === 'order') {
         $stored ? 'Číslo objednávky: ' . $stored['number'] : null,
         'Kniha: ' . $order['item'],
         'Počet kusov: ' . $quantity,
+        'Doručenie: ' . $order['delivery'],
         'Cena spolu: ' . ca_money($order['total_cents'])
-            . ($order['unit_cents'] !== null
-                ? ' (' . ca_money($order['unit_cents']) . ' × ' . $quantity . ($order['digital'] ? ', bez poštovného' : ' + poštovné ' . ca_money($order['shipping_cents'])) . ')'
-                : ''),
+            . ($order['unit_cents'] !== null ? ' (' . ca_price_breakdown($order['unit_cents'], $quantity, $order['shipping_cents']) . ')' : ''),
         $order['price_note'] ? 'POZOR: ' . $order['price_note'] : null,
         '',
     ];
@@ -233,7 +246,7 @@ if (posted('_form') === 'order') {
             'Meno a priezvisko: ' . $customer['name'],
             'E-mail: ' . $customer['email'],
             $customer['phone'] !== '' ? 'Telefón: ' . $customer['phone'] : null,
-            $order['digital'] ? null : 'Adresa: ' . $customer['street'] . ', ' . $customer['zip'] . ' ' . $customer['city'],
+            $needsAddress ? 'Adresa: ' . $customer['street'] . ', ' . $customer['zip'] . ' ' . $customer['city'] : null,
             $customer['note'] !== '' ? "Poznámka:\n" . $customer['note'] : null,
             ''
         );
@@ -243,7 +256,9 @@ if (posted('_form') === 'order') {
         : (ca_config()['db'] ? 'POZOR: Objednávku sa nepodarilo uložiť do administrácie, je iba v tomto e-maile.' : null);
     $body = implode("\n", array_filter($lines, function ($line) { return $line !== null; }))
         . ($withDetails ? $footer : "\n\n--\nOdoslané z webu coachingacademy.sk " . date('j. n. Y H:i') . "\n");
-    $subject = ($stored ? 'Objednávka č. ' . $stored['number'] : 'Objednávka knihy') . ': ' . $order['item'] . ' × ' . $quantity;
+    $subject = ($stored ? 'Objednávka č. ' . $stored['number'] : 'Objednávka knihy') . ': ' . $order['item'] . ' × ' . $quantity
+        // Personal pickup is worth seeing in the inbox already.
+        . ($order['digital'] || $needsAddress ? '' : ' – ' . mb_strtolower($order['delivery']));
     $sent = ca_send_mail($subject, $body, $withDetails ? $visitorEmail : '');
 
     if (!$stored && !$sent) {
