@@ -1,23 +1,17 @@
 ---
-// Book order form for KOUČING and the iSPAK books. Orders arrive by e-mail; payment is by bank transfer.
+// Book order form for KOUČING and the iSPAK books. The order goes to server/form.php, which stores it for the
+// administration and e-mails it; payment is by bank transfer.
 // Links preselect the book: /objednavka?kniha=koucing, /objednavka?kniha=<id from src/content/knihy>&variant=<index>
-import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
-import BookOrderForm, { type OrderProduct } from '../components/BookOrderForm';
+import BookOrderForm from '../components/BookOrderForm';
 import Icon from '../components/Icon.astro';
 import { book, formatPrice, site } from '../config/site';
+import { getOrderCatalog } from '../lib/catalog';
 
-const ispak = (await getCollection('knihy')).sort((a, b) => a.data.order - b.data.order);
-const products: OrderProduct[] = [
-  { id: 'koucing', title: book.title, variants: [{ label: 'Tlačená kniha', price: book.price, digital: false }] },
-  ...ispak.map((entry) => ({
-    id: entry.id,
-    title: entry.data.title,
-    variants: entry.data.variants.map(({ label, price, digital }) => ({ label, price, digital })),
-  })),
-];
-const note = book.preorder ? `Kniha ${book.shortTitle} vychádza v termíne ${book.releaseLabel}, odošleme ju hneď po vydaní.` : undefined;
+const { products, shipping } = await getOrderCatalog();
+// Shown after ordering the KOUČING book while it is on pre-order.
+const notes: Record<string, string> = book.preorder ? { koucing: `Kniha ${book.shortTitle} vychádza v termíne ${book.releaseLabel}, odošleme ju hneď po vydaní.` } : {};
 ---
 
 <BaseLayout title="Objednávka knihy" description="Objednávka kníh KOUČING a kníh o systemickej práci – platba prevodom, doručenie poštou na Slovensku." noindex>
@@ -32,7 +26,7 @@ const note = book.preorder ? `Kniha ${book.shortTitle} vychádza v termíne ${bo
     <div class="container-page grid grid-cols-1 gap-14 lg:grid-cols-[1fr_340px]">
       <div>
         <h2 class="sr-only">Objednávkový formulár</h2>
-        <BookOrderForm client:load endpoint={site.formEndpoint} email={site.email} products={products} shipping={book.shipping} note={note} />
+        <BookOrderForm client:load endpoint={site.formEndpoint} email={site.email} products={products} shipping={shipping} notes={notes} />
       </div>
 
       <aside class="space-y-4" aria-label="Ako prebieha objednávka">

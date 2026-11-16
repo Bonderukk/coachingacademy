@@ -29,4 +29,4 @@ pnpm-debug.log*
 fotkyalogananovyweb1/
 
 # server-side secrets for the form endpoint (recipients, SMTP password)
-server/form-config.php
+server/form-config.php*

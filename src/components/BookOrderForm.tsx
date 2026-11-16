@@ -1,23 +1,17 @@
 import { useEffect, useState, type SubmitEvent } from 'react';
+import type { OrderProduct } from '../lib/catalog';
 import { url } from '../lib/url';
 import { input, label } from './formStyles';
 
-export interface OrderProduct {
-  /** "koucing" for the KOUČING book, otherwise the id of an entry in src/content/knihy. */
-  id: string;
-  title: string;
-  variants: { label: string; price: number; digital: boolean }[];
-}
-
 interface Props {
-  /** Form backend URL (Formspree, …). Without it the order opens the visitor's e-mail app instead. */
+  /** Form backend URL (server/form.php). Without it the order opens the visitor's e-mail app instead. */
   endpoint?: string;
   email: string;
   products: OrderProduct[];
   /** Postage for printed books, charged once per order. */
   shipping: number;
-  /** Shown after a successful order, e.g. when a pre-ordered book will be sent. */
-  note?: string;
+  /** Per product id: a sentence shown after that book was ordered, e.g. when a pre-ordered book will be sent. */
+  notes?: Record<string, string>;
 }
 
 type Status = 'idle' | 'sending' | 'sent' | 'error';
@@ -25,10 +19,12 @@ type Status = 'idle' | 'sending' | 'sent' | 'error';
 const eur = (amount: number) =>
   new Intl.NumberFormat('sk-SK', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2, minimumFractionDigits: 0 }).format(amount);
 
-export default function BookOrderForm({ endpoint, email, products, shipping, note }: Props) {
+export default function BookOrderForm({ endpoint, email, products, shipping, notes = {} }: Props) {
   const options = products.flatMap((p) =>
     p.variants.map((v, i) => ({
       value: `${p.id}:${i}`,
+      productId: p.id,
+      variantIndex: i,
       name: p.variants.length > 1 ? `${p.title} – ${v.label}` : p.title,
       ...v,
     })),
@@ -38,6 +34,7 @@ export default function BookOrderForm({ endpoint, email, products, shipping, not
   const [choice, setChoice] = useState(options[0].value);
   const [quantity, setQuantity] = useState(1);
   const [sentTo, setSentTo] = useState('');
+  const [orderNumber, setOrderNumber] = useState('');
 
   // Pre-select the book from links like /objednavka?kniha=koucing or ?kniha=organizacia-ako-zivy-system&variant=1
   useEffect(() => {
@@ -70,6 +67,9 @@ export default function BookOrderForm({ endpoint, email, products, shipping, not
     try {
       const res = await fetch(endpoint, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
       if (!res.ok) throw new Error(String(res.status));
+      // The endpoint returns the order number when the order was stored for the administration.
+      const reply = await res.json().catch(() => ({}));
+      setOrderNumber(typeof reply.order === 'string' ? reply.order : '');
       setSentTo(String(data.get('email') ?? ''));
       form.reset();
       setStatus('sent');
@@ -84,9 +84,14 @@ export default function BookOrderForm({ endpoint, email, products, shipping, not
       <div role="status" className="rounded-3xl border border-sand-200 bg-white p-8 text-center md:p-12">
         <p className="eyebrow">Objednávka prijatá</p>
         <p className="mt-3 font-serif text-3xl text-brand-950">Ďakujeme za objednávku</p>
+        {orderNumber && (
+          <p className="mt-4 text-lg text-brand-950">
+            Číslo objednávky: <strong>{orderNumber}</strong>
+          </p>
+        )}
         <p className="mx-auto mt-4 max-w-lg text-muted">
           Potvrdenie objednávky a údaje na platbu prevodom vám pošleme do 2 pracovných dní na {sentTo || 'váš e-mail'}.
-          {note && ` ${note}`}
+          {notes[item.productId] && ` ${notes[item.productId]}`}
         </p>
         <a href={url('/knihy')} className="btn-secondary mt-8">Späť na knihy</a>
       </div>
@@ -95,6 +100,10 @@ export default function BookOrderForm({ endpoint, email, products, shipping, not
 
   return (
     <form onSubmit={onSubmit} className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+      {/* `_form` tells the endpoint this is a book order; it prices it from `_produkt` and `_variant`, not from the visible fields. */}
+      <input type="hidden" name="_form" value="order" />
+      <input type="hidden" name="_produkt" value={item.productId} />
+      <input type="hidden" name="_variant" value={item.variantIndex} />
       <input type="hidden" name="_subject" value={`Objednávka knihy: ${item.name}`} />
       <input type="text" name="_gotcha" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
 

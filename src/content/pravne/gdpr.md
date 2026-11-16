@@ -74,6 +74,26 @@ Osobné údaje získané vyplnením kontaktného formulára na našej webovej st
 | Marketingové účely | Súhlas dotknutej osoby podľa čl. 6 ods. 1 písm. a) |
 | Účely týkajúce sa ochrany oprávnených záujmov | Oprávnený záujem nás, našich klientov alebo tretích strán podľa čl. 6 ods. 1 písm. f) |
 
+### Objednávky kníh cez webovú stránku
+
+Pri objednávke knihy cez objednávkový formulár spracúvame Vaše meno a priezvisko, e-mailovú adresu, telefónne číslo (ak ho uvediete), doručovaciu adresu, obsah objednávky a prípadnú poznámku. Bez týchto údajov nie je možné objednávku vybaviť.
+
+| Účel | Právny základ podľa GDPR |
+| --- | --- |
+| Vybavenie objednávky, komunikácia o platbe a doručenie knihy | Plnenie zmluvy podľa čl. 6 ods. 1 písm. b) |
+| Vystavenie a uchovávanie účtovných dokladov | Plnenie zákonnej povinnosti podľa čl. 6 ods. 1 písm. c) |
+| Ochrana formulára pred zneužitím (obmedzenie počtu odoslaní) | Oprávnený záujem podľa čl. 6 ods. 1 písm. f) |
+
+**Kde sú údaje uložené a ako sú chránené.** Objednávka sa uloží do našej evidencie objednávok na serveroch spoločnosti Websupport s. r. o. na Slovensku a zároveň nám príde e-mailom. Osobné údaje sú v evidencii uložené v zašifrovanej podobe. Prístup k nim má len prevádzkovateľ po prihlásení menom a heslom cez zabezpečené pripojenie. Prihlásenia, exporty a zmeny v objednávkach sa zaznamenávajú.
+
+**Kto údaje dostane.** Poskytovateľ webhostingu a e-mailových služieb (Websupport s. r. o.), prepravca, ktorý Vám zásielku doručí (meno, adresa a telefónne číslo), a v nevyhnutnom rozsahu osoby, ktoré pre nás spracúvajú účtovníctvo.
+
+**Ako dlho údaje uchovávame.** Osobné údaje z objednávky uchovávame 3 roky od jej odoslania, čo zodpovedá všeobecnej premlčacej dobe. Potom ich automaticky vymažeme a v evidencii zostane len anonymný záznam (kniha, suma a dátum). Pri zrušenej objednávke ich vymažeme po 6 mesiacoch. Rovnaké lehoty platia pre e-mailové kópie objednávok. Účtovné doklady uchovávame 10 rokov podľa zákona č. 431/2002 Z. z. o účtovníctve. Ak požiadate o výmaz skôr, údaje z objednávky vymažeme, pokiaľ ich nemusíme uchovať zo zákona.
+
+**Ochrana pred zneužitím.** Pri odoslaní formulára sa dočasne uloží jednosmerný odtlačok Vašej IP adresy, podľa ktorého 15 minút obmedzujeme počet odoslaní. Staré odtlačky priebežne mažeme a samotnú IP adresu neukladáme.
+
+Správy z kontaktného formulára a z formulára na odstúpenie od zmluvy na webe neukladáme. Prídu nám iba e-mailom.
+
 ### Ako môžete zmeniť, aktualizovať alebo odstrániť svoje osobné údaje?
 
 Svoje osobné údaje môžete kedykoľvek zmeniť alebo aktualizovať na základe žiadosti odoslanej našej spoločnosti písomne alebo emailom. Zároveň máte právo kedykoľvek odvolať svoj súhlas so spracovaním Vašich osobných údajov formou žiadosti odoslanej našej spoločnosti písomne alebo emailom. Na Vašu žiadosť budú osobné údaje z databázy vymazané a spoločnosť Coaching Academy s. r. o. ich nebude ďalej spracovávať.
@@ -118,29 +138,21 @@ O Vašej požiadavke budeme tiež informovať ostatné strany, ktorým sme Vaše
 
 V prípade podozrenia máte právo na začatie konania podľa § 100 zákona 18/2018 Z.z. o ochrane osobných údajov, prostredníctvom [dataprotection.gov.sk](https://dataprotection.gov.sk/uoou/).
 
-### Čo sú cookies a ako ich využívame?
+### Cookies a služby tretích strán
 
-Cookie je malý textový súbor, ktorý sa prenáša z webovej stránky a uloží sa vo Vašom počítači alebo vo Vašom mobilnom zariadení. Spoločnosť Coaching Academy s. r. o. používa cookie súbory (tzv. cookies) s cieľom zlepšiť a zjednodušiť Vašu návštevu na [www.coachingacademy.sk](https://coachingacademy.sk).
+Cookie je malý textový súbor, ktorý si webová stránka ukladá vo Vašom počítači alebo mobilnom zariadení.
 
-Väčšina prehliadačov cookies automaticky akceptuje, pokiaľ nie je prehliadač nastavený inak. Na základe cookies získavame údaje ako je celkový počet zákazníkov a taktiež sa informujeme, či ste už našu stránku navštívili. Súbory cookies môžete odmietnuť alebo v prípade potreby vymazať.
+Naša webová stránka [www.coachingacademy.sk](https://coachingacademy.sk) neukladá žiadne cookies. Nepoužívame analytické ani reklamné nástroje (napríklad Google Analytics) a návštevníkov nesledujeme. Písma a obrázky načítavame z vlastnej domény.
 
-Aby sme dokázali lepšie pochopiť návštevníkov našich stránok, používame tiež službu Google Analytics, poskytovanú spoločnosťou Google, Inc.
+Na stránke sa stretnete s týmito službami tretích strán:
 
-Služba Google Analytics používa cookies za účelom analýzy spôsobu užívania našich webových stránok. Informácie vygenerované súborom cookie o užívaní stránky (vrátane Vašej IP adresy) budú spoločnosťou Google, Inc., prenesené a uložené na serveri spoločnosti Google, Inc. Všetky takto získané dáta budú spracované anonymne. Dáta sú určené výhradne pre vyhodnocovanie používania webových stránok. Anonymita je zaručená tým, že spoločnosť Google, Inc., nebude spájať Vašu IP adresu s akýmikoľvek inými dátami, ktoré má k dispozícii. Spoločnosti Google, Inc., nebudú odoslané ani žiadne iné osobné údaje ako napríklad email, meno, telefónne číslo.
+· Prevádzka webu – stránka je umiestnená na službe GitHub Pages spoločnosti GitHub, Inc. (USA). Pri každej návšteve GitHub technicky spracúva IP adresu návštevníka v prevádzkových záznamoch, aby stránku doručil a chránil službu pred zneužitím. Prenos údajov do USA sa riadi zárukami podľa GDPR.
 
-Môžete odmietnuť používanie súboru cookies, čím zabránite zberu dát o Vás. Urobiť tak môžete voľbou v nastaveniach Vášho prehliadača. Informácie o nastavení konkrétneho prehliadače nájdete na týchto adresách:
+· Prehrávač Spotify na stránke Podcast – načíta sa až po Vašom kliknutí. Spoločnosť Spotify AB potom môže ukladať vlastné cookies a spracúvať údaje podľa svojich zásad.
 
-· Internet Explorer: [https://support.microsoft.com/sk-sk](https://support.microsoft.com/sk-sk)
+· Prihlášky na výcviky – vypĺňate ich vo formulári Google (Google Ireland Limited), kde sa údaje z prihlášky pre nás uchovávajú. Google ich spracúva podľa svojich zásad.
 
-· Google Chrome: [https://support.google.com/](https://support.google.com/)
-
-· Mozilla Firefox: [https://support.mozilla.org/sk/](https://support.mozilla.org/sk/)
-
-· Opera: [https://help.opera.com/opera/Windows/2393/cs/controlPages.html](https://help.opera.com/opera/Windows/2393/cs/controlPages.html#manageCookies)
-
-· Safari: [https://support.apple.com/](https://support.apple.com/)
-
-Viac informácií ku cookies nájdete tu: [https://policies.google.com/technologies/cookies?hl=sk](https://policies.google.com/technologies/cookies?hl=sk)
+Ak v budúcnosti začneme používať cookies, ktoré nie sú nevyhnutné, vopred si od Vás vyžiadame súhlas.
 
 ### Kontaktné údaje
 

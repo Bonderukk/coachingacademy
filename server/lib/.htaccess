@@ -1,0 +1,8 @@
+# Code that is only included by form.php and admin/. Nothing here is meant to be opened in a browser.
+<IfModule mod_authz_core.c>
+  Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+  Order allow,deny
+  Deny from all
+</IfModule>

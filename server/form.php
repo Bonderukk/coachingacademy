@@ -3,33 +3,20 @@
  * Form endpoint for coachingacademy.sk (book orders, contact, withdrawal).
  *
  * The website itself is static (GitHub Pages), so its forms POST here. This file lives on the
- * Websupport webhosting (dalibus_1) under the domain coachacademy.sk and e-mails each submission
- * to Dad. The site's PUBLIC_FORM_ENDPOINT points at https://coachacademy.sk/form.php.
+ * Websupport webhosting (dalibus_1) under the domain coachacademy.sk. The site's PUBLIC_FORM_ENDPOINT
+ * points at https://coachacademy.sk/form.php.
  *
- * Optional settings live in form-config.php next to this file (see form-config.example.php). That
- * file stays on the server only and is not in git, because it holds the recipients and the SMTP password.
+ * - Book orders (`_form=order`) are priced from the website's price list, stored in the database with
+ *   the customer's data encrypted, and e-mailed to Dad. They show up in the administration (admin/).
+ * - Contact and withdrawal messages are only e-mailed.
  *
- * The forms send the same fields Formspree would: `_subject` (e-mail subject), `_gotcha` (honeypot),
+ * Settings live in form-config.php (see form-config.example.php), which stays on the server only.
+ * The forms follow Formspree's conventions: `_subject` (e-mail subject), `_gotcha` (honeypot),
  * `email` (the visitor's address, used as Reply-To) and the visible fields.
- * Works on PHP 7.4+.
  */
 
-// ---- Settings ----------------------------------------------------------------------------------
-
-// Defaults; form-config.php can override them.
-$config = [
-    // One address or a list.
-    'mail_to' => 'dalibor@coachingacademy.sk',
-    // Sender used with PHP mail(). With SMTP the sender is the SMTP mailbox.
-    'mail_from' => 'web@coachacademy.sk',
-    'mail_from_name' => 'Web coachingacademy.sk',
-    // Authenticated SMTP (recommended): ['host' => 'smtp.m1.websupport.sk', 'port' => 465, 'user' => '…', 'pass' => '…'].
-    // Without it, PHP mail() is used.
-    'smtp' => null,
-];
-if (is_readable(__DIR__ . '/form-config.php')) {
-    $config = array_merge($config, (array) require __DIR__ . '/form-config.php');
-}
+define('CA_APP', true);
+require __DIR__ . '/lib/app.php';
 
 // Pages allowed to submit (the live site, the GitHub Pages preview, local development).
 const ALLOWED_ORIGINS = [
@@ -62,88 +49,32 @@ const LABELS = [
     'suhlas' => 'Súhlas s podmienkami',
 ];
 
-// ---- Helpers -----------------------------------------------------------------------------------
-
-date_default_timezone_set('Europe/Bratislava');
-
 function respond(int $status, array $body): void
 {
     http_response_code($status);
     header('Content-Type: application/json; charset=utf-8');
+    header('X-Content-Type-Options: nosniff');
     echo json_encode($body, JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-/** One line of text: no line breaks (prevents e-mail header injection), trimmed and capped. */
-function one_line(string $value, int $max = 200): string
+/** A posted field as a string ('' when missing or not a plain value). */
+function posted(string $key): string
 {
-    return mb_substr(trim(preg_replace('/[\r\n\t]+/', ' ', $value)), 0, $max);
+    return is_string($_POST[$key] ?? null) ? $_POST[$key] : '';
 }
 
-/** Encodes a header value as UTF-8 (RFC 2047) so Slovak characters survive. */
-function encode_header(string $value): string
+/** "25 €" or "1 250,50 €" as cents; null when it is not a number. */
+function money_to_cents(string $text): ?int
 {
-    return '=?UTF-8?B?' . base64_encode($value) . '?=';
+    $number = str_replace(',', '.', (string) preg_replace('/[^0-9,.]/', '', $text));
+    return is_numeric($number) ? (int) round($number * 100) : null;
 }
 
-/**
- * Sends a message over authenticated SMTP (implicit TLS, port 465). Returns null on success,
- * otherwise a short reason for the server log.
- */
-function smtp_send(array $smtp, string $from, array $to, string $message): ?string
-{
-    $host = $smtp['host'];
-    $port = (int) ($smtp['port'] ?? 465);
-    $socket = @stream_socket_client("ssl://$host:$port", $errno, $errstr, 20, STREAM_CLIENT_CONNECT,
-        stream_context_create(['ssl' => ['peer_name' => $host]]));
-    if (!$socket) {
-        return "connect: $errstr";
-    }
-    stream_set_timeout($socket, 20);
+$footer = "\n\n--\nOdoslané z webu coachingacademy.sk " . date('j. n. Y H:i')
+    . "\nNa tento e-mail môžete priamo odpovedať, odpoveď pôjde odosielateľovi.\n";
 
-    // Reads one (possibly multi-line) reply and checks its status code.
-    $expect = function (string $code) use ($socket): ?string {
-        $reply = '';
-        while (($line = fgets($socket, 1024)) !== false) {
-            $reply .= $line;
-            if (strlen($line) < 4 || $line[3] === ' ') {
-                break;
-            }
-        }
-        return strncmp($reply, $code, 3) === 0 ? null : trim($reply);
-    };
-    $command = function (string $line, string $code) use ($socket, $expect): ?string {
-        fwrite($socket, $line . "\r\n");
-        return $expect($code);
-    };
-
-    $steps = [
-        fn () => $expect('220'),
-        fn () => $command('EHLO coachacademy.sk', '250'),
-        fn () => $command('AUTH LOGIN', '334'),
-        fn () => $command(base64_encode($smtp['user']), '334'),
-        fn () => $command(base64_encode($smtp['pass']), '235'),
-        fn () => $command("MAIL FROM:<$from>", '250'),
-    ];
-    foreach ($to as $recipient) {
-        $steps[] = fn () => $command("RCPT TO:<$recipient>", '250');
-    }
-    $steps[] = fn () => $command('DATA', '354');
-    // Dot-stuffing: a line starting with "." must be doubled inside DATA.
-    $steps[] = fn () => $command(preg_replace('/^\./m', '..', $message) . "\r\n.", '250');
-
-    foreach ($steps as $i => $step) {
-        if (($error = $step()) !== null) {
-            fclose($socket);
-            return "step $i: $error";
-        }
-    }
-    fwrite($socket, "QUIT\r\n");
-    fclose($socket);
-    return null;
-}
-
-// ---- Request handling --------------------------------------------------------------------------
+// ---- Who may call us ---------------------------------------------------------------------------
 
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 if (in_array($origin, ALLOWED_ORIGINS, true)) {
@@ -164,14 +95,13 @@ if (!in_array($origin, ALLOWED_ORIGINS, true)) {
     respond(403, ['ok' => false, 'error' => 'origin']);
 }
 
-// Bots fill the hidden honeypot field: pretend success and send nothing.
+// Bots fill the hidden honeypot field: pretend success and do nothing.
 if (!empty($_POST['_gotcha'])) {
     respond(200, ['ok' => true]);
 }
 
-// Simple per-IP rate limit, stored in the system temp directory.
-$ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-$rateFile = sys_get_temp_dir() . '/ca-form-' . sha1($ip);
+// Simple per-IP rate limit, stored in the temp directory under a keyed hash of the address.
+$rateFile = sys_get_temp_dir() . '/ca-form-' . ca_ip_hash();
 $now = time();
 $recent = [];
 if (is_readable($rateFile)) {
@@ -183,12 +113,158 @@ if (is_readable($rateFile)) {
 if (count($recent) >= RATE_LIMIT) {
     respond(429, ['ok' => false, 'error' => 'rate']);
 }
-
-// Validate the visitor's e-mail (every form asks for it).
-$visitorEmail = one_line((string) ($_POST['email'] ?? ''), 254);
-if (!filter_var($visitorEmail, FILTER_VALIDATE_EMAIL)) {
-    respond(422, ['ok' => false, 'error' => 'email']);
+// Remove the records of visitors whose window has passed, so address hashes do not pile up.
+foreach (glob(sys_get_temp_dir() . '/ca-form-*') ?: [] as $stale) {
+    if (@filemtime($stale) < $now - RATE_WINDOW_SECONDS) {
+        @unlink($stale);
+    }
 }
+
+// Every form asks for the visitor's e-mail.
+$visitorEmail = ca_one_line(posted('email'), 254);
+if (!filter_var($visitorEmail, FILTER_VALIDATE_EMAIL)) {
+    respond(422, ['ok' => false, 'error' => 'invalid', 'field' => 'email']);
+}
+
+// ---- Book order --------------------------------------------------------------------------------
+
+if (posted('_form') === 'order') {
+    $quantity = filter_var(posted('pocet_kusov'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 20]]);
+    $customer = [
+        'name' => ca_one_line(posted('meno'), 120),
+        'email' => $visitorEmail,
+        'phone' => ca_one_line(posted('telefon'), 40),
+        'street' => ca_one_line(posted('ulica'), 150),
+        'zip' => ca_one_line(posted('psc'), 12),
+        'city' => ca_one_line(posted('mesto'), 100),
+        'note' => ca_text(posted('poznamka'), 2000),
+    ];
+    if ($quantity === false) {
+        respond(422, ['ok' => false, 'error' => 'invalid', 'field' => 'pocet_kusov']);
+    }
+    if ($customer['name'] === '') {
+        respond(422, ['ok' => false, 'error' => 'invalid', 'field' => 'meno']);
+    }
+    if (posted('suhlas') === '') {
+        respond(422, ['ok' => false, 'error' => 'invalid', 'field' => 'suhlas']);
+    }
+
+    // Price the order from the website's price list, never from what the browser sent.
+    $productId = ca_one_line(posted('_produkt'), 80);
+    $variantIndex = filter_var(posted('_variant'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 0, 'max_range' => 50]]);
+    $claimedTotal = ca_one_line(posted('cena_spolu'), 40);
+    $product = null;
+    $variant = null;
+    $catalog = ca_catalog();
+    foreach ($catalog['products'] ?? [] as $candidate) {
+        if ($candidate['id'] === $productId && $variantIndex !== false && isset($candidate['variants'][$variantIndex])) {
+            $product = $candidate;
+            $variant = $candidate['variants'][$variantIndex];
+        }
+    }
+
+    if ($variant !== null) {
+        $digital = !empty($variant['digital']);
+        $unit = (int) round($variant['price'] * 100);
+        $shipping = $digital ? 0 : (int) round($catalog['shipping'] * 100);
+        $order = [
+            'product_id' => $productId,
+            'item' => mb_substr(count($product['variants']) > 1 ? $product['title'] . ' – ' . $variant['label'] : $product['title'], 0, 255),
+            'digital' => $digital,
+            'quantity' => $quantity,
+            'unit_cents' => $unit,
+            'shipping_cents' => $shipping,
+            'total_cents' => $unit * $quantity + $shipping,
+            'price_note' => null,
+        ];
+        if ($claimedTotal !== '' && money_to_cents($claimedTotal) !== $order['total_cents']) {
+            $order['price_note'] = "Zákazníkovi sa na webe zobrazila iná suma ($claimedTotal). Skontrolujte cenu.";
+        }
+    } else {
+        // The price list could not be loaded, or it does not know this book. Never lose the order:
+        // keep what the browser sent and flag it for a manual check.
+        $digital = $customer['street'] === '' && $customer['city'] === '';
+        $order = [
+            'product_id' => $productId,
+            'item' => ca_one_line(posted('kniha'), 255) ?: 'Kniha (neuvedená)',
+            'digital' => $digital,
+            'quantity' => $quantity,
+            'unit_cents' => null,
+            'shipping_cents' => null,
+            'total_cents' => money_to_cents($claimedTotal),
+            'price_note' => 'Cenu sa nepodarilo overiť podľa cenníka na webe. Skontrolujte ju.',
+        ];
+    }
+    if (!$order['digital'] && ($customer['street'] === '' || $customer['zip'] === '' || $customer['city'] === '')) {
+        respond(422, ['ok' => false, 'error' => 'invalid', 'field' => 'adresa']);
+    }
+
+    // Store it. A database problem must not stop the order: it still goes out by e-mail.
+    $stored = null;
+    $pdo = null;
+    try {
+        $pdo = ca_db();
+        if ($pdo) {
+            $stored = ca_order_create($pdo, $order, $customer);
+        }
+    } catch (Throwable $e) {
+        error_log('form.php: order not stored: ' . $e->getMessage());
+    }
+
+    // With mail_order_details off, a stored order is announced without personal data: the customer is in the
+    // administration. An order that could not be stored always goes out in full, otherwise it would be lost.
+    $withDetails = !$stored || !empty(ca_config()['mail_order_details']);
+    $lines = [
+        'Nová objednávka z webu coachingacademy.sk',
+        '',
+        $stored ? 'Číslo objednávky: ' . $stored['number'] : null,
+        'Kniha: ' . $order['item'],
+        'Počet kusov: ' . $quantity,
+        'Cena spolu: ' . ca_money($order['total_cents'])
+            . ($order['unit_cents'] !== null
+                ? ' (' . ca_money($order['unit_cents']) . ' × ' . $quantity . ($order['digital'] ? ', bez poštovného' : ' + poštovné ' . ca_money($order['shipping_cents'])) . ')'
+                : ''),
+        $order['price_note'] ? 'POZOR: ' . $order['price_note'] : null,
+        '',
+    ];
+    if ($withDetails) {
+        array_push(
+            $lines,
+            'Meno a priezvisko: ' . $customer['name'],
+            'E-mail: ' . $customer['email'],
+            $customer['phone'] !== '' ? 'Telefón: ' . $customer['phone'] : null,
+            $order['digital'] ? null : 'Adresa: ' . $customer['street'] . ', ' . $customer['zip'] . ' ' . $customer['city'],
+            $customer['note'] !== '' ? "Poznámka:\n" . $customer['note'] : null,
+            ''
+        );
+    }
+    $lines[] = $stored
+        ? ($withDetails ? 'Objednávka v administrácii: ' : 'Údaje zákazníka nájdete v administrácii: ') . rtrim((string) ca_config()['admin_url'], '/') . '/?a=order&id=' . $stored['id']
+        : (ca_config()['db'] ? 'POZOR: Objednávku sa nepodarilo uložiť do administrácie, je iba v tomto e-maile.' : null);
+    $body = implode("\n", array_filter($lines, function ($line) { return $line !== null; }))
+        . ($withDetails ? $footer : "\n\n--\nOdoslané z webu coachingacademy.sk " . date('j. n. Y H:i') . "\n");
+    $subject = ($stored ? 'Objednávka č. ' . $stored['number'] : 'Objednávka knihy') . ': ' . $order['item'] . ' × ' . $quantity;
+    $sent = ca_send_mail($subject, $body, $withDetails ? $visitorEmail : '');
+
+    if (!$stored && !$sent) {
+        respond(500, ['ok' => false, 'error' => 'mail']);
+    }
+    if ($pdo && $stored) {
+        try {
+            if (!$sent) {
+                ca_event($pdo, 'web', 'order.mail_failed', $stored['id']);
+            }
+            ca_retention($pdo);
+        } catch (Throwable $e) {
+            error_log('form.php: ' . $e->getMessage());
+        }
+    }
+    $recent[] = $now;
+    @file_put_contents($rateFile, implode(',', $recent), LOCK_EX);
+    respond(200, $stored ? ['ok' => true, 'order' => $stored['number']] : ['ok' => true]);
+}
+
+// ---- Contact and withdrawal messages -----------------------------------------------------------
 
 // Collect the visible fields in the order they were sent.
 $lines = [];
@@ -200,8 +276,8 @@ foreach ($_POST as $key => $value) {
     if (++$fieldCount > 30) {
         break;
     }
-    $label = LABELS[$key] ?? one_line($key, 60);
-    $value = mb_substr(trim(str_replace("\r\n", "\n", $value)), 0, 5000);
+    $label = LABELS[$key] ?? ca_one_line($key, 60);
+    $value = ca_text($value);
     if ($key === 'suhlas') {
         $value = 'áno';
     }
@@ -211,51 +287,12 @@ foreach ($_POST as $key => $value) {
     $lines[] = strpos($value, "\n") === false ? "$label: $value" : "$label:\n$value\n";
 }
 
-$subject = one_line((string) ($_POST['_subject'] ?? ''), 150);
+$subject = ca_one_line(posted('_subject'), 150);
 if ($subject === '') {
     $subject = 'Správa z webu coachingacademy.sk';
 }
 
-$body = implode("\n", $lines)
-    . "\n\n--\nOdoslané z webu coachingacademy.sk " . date('j. n. Y H:i')
-    . "\nNa tento e-mail môžete priamo odpovedať, odpoveď pôjde odosielateľovi.\n";
-
-$to = array_values(array_filter((array) $config['mail_to'], function ($a) { return filter_var($a, FILTER_VALIDATE_EMAIL); }));
-$smtp = is_array($config['smtp']) && !empty($config['smtp']['host']) ? $config['smtp'] : null;
-$from = $smtp ? $smtp['user'] : $config['mail_from'];
-$fromHeader = encode_header($config['mail_from_name']) . " <$from>";
-
-if ($smtp) {
-    $message = implode("\r\n", [
-        'Date: ' . date('r'),
-        'Message-ID: <' . bin2hex(random_bytes(12)) . '@coachacademy.sk>',
-        "From: $fromHeader",
-        'To: ' . implode(', ', $to),
-        "Reply-To: $visitorEmail",
-        'Subject: ' . encode_header($subject),
-        'MIME-Version: 1.0',
-        'Content-Type: text/plain; charset=UTF-8',
-        'Content-Transfer-Encoding: base64',
-        '',
-        rtrim(chunk_split(base64_encode($body), 76, "\r\n")),
-    ]);
-    $error = smtp_send($smtp, $from, $to, $message);
-    $sent = $error === null;
-    if (!$sent) {
-        error_log("form.php SMTP failed: $error");
-    }
-} else {
-    $headers = implode("\r\n", [
-        "From: $fromHeader",
-        "Reply-To: $visitorEmail",
-        'MIME-Version: 1.0',
-        'Content-Type: text/plain; charset=UTF-8',
-        'Content-Transfer-Encoding: 8bit',
-    ]);
-    $sent = mail(implode(', ', $to), encode_header($subject), $body, $headers, '-f' . $from);
-}
-
-if (!$sent) {
+if (!ca_send_mail($subject, implode("\n", $lines) . $footer, $visitorEmail)) {
     respond(500, ['ok' => false, 'error' => 'mail']);
 }
 
