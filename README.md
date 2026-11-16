@@ -43,12 +43,21 @@ Frontmatter is validated by the schema in `src/content.config.ts`, so a typo in 
 
 ## Book sales and forms
 
-Both work without configuration: they fall back to e-mail. Copy `.env.example` to `.env` to switch them on:
+Books (KOUČING and the iSPAK books) are ordered through our own form at `/objednavka` (`src/components/BookOrderForm.tsx`).
+The order arrives by e-mail and Dad replies with the payment details (bank transfer, as the VOP say). Buy buttons link to
+`/objednavka?kniha=koucing` or `/objednavka?kniha=<book id>&variant=<index>` to preselect the book.
+The Websupport builder stays only because it hosts the @coachingacademy.sk mailboxes.
 
-- `PUBLIC_STRIPE_BOOK_LINK` is a Stripe Payment Link. In Stripe, enable shipping address collection and set the post-payment redirect to `https://coachingacademy.sk/kniha/dakujeme`.
-- `PUBLIC_FORM_ENDPOINT` is a form backend (Formspree, Web3Forms, …) used by the contact, sign-up and withdrawal forms.
+Without configuration, forms fall back to opening the visitor's e-mail app. Copy `.env.example` to `.env` to switch them on:
 
-Set the same variables in the hosting dashboard for production builds.
+- `PUBLIC_FORM_ENDPOINT` is the form backend used by the book order, contact and withdrawal forms: `https://coachacademy.sk/form.php`.
+  That is our own PHP script, [server/form.php](server/form.php), uploaded to the Websupport webhosting (service dalibus_1, domain
+  `coachacademy.sk`). It e-mails each submission to dalibor@coachingacademy.sk with the visitor as Reply-To, accepts only the
+  origins listed at its top, and has a honeypot and a per-IP rate limit. It is not part of the GitHub Pages build: after editing it,
+  upload it again by hand. The fields follow Formspree's conventions (`_subject`, `_gotcha`), so Formspree would work as a drop-in too.
+- `PUBLIC_STRIPE_BOOK_LINK` (not used for now) is a Stripe Payment Link. If set, the KOUČING buy buttons go to Stripe instead of the order form. In Stripe, enable shipping address collection and set the post-payment redirect to `https://coachingacademy.sk/kniha/dakujeme`.
+
+For the GitHub Pages build, set the same names as repository variables (Settings → Secrets and variables → Actions → Variables).
 
 ## JavaScript budget
 
@@ -57,19 +66,22 @@ React loads only on pages with `ContactForm` (contact, services, withdrawal) or 
 
 ## Deployment
 
-**Preview:** every push to `main` builds the site in preview mode (`noindex` on all pages) and deploys it to GitHub Pages at
-https://bonderukk.github.io/coachingacademy/ (`.github/workflows/deploy-preview.yml`). The subpath comes from `ASTRO_BASE`, which is why internal
-links go through `url()` from `src/lib/url.ts`. Use `url('/kniha')`, never a bare `href="/kniha"`.
+Every push to `main` builds the site and deploys it to GitHub Pages (`.github/workflows/deploy-preview.yml`).
 
-**Production:** the output is static `dist/`, so any static host works. With `build.format: 'file'` and `trailingSlash: 'never'`, URLs look like `/kniha` (no trailing slash).
+**Preview:** while Pages serves the site at https://bonderukk.github.io/coachingacademy/, the build runs in preview mode (`noindex` on all pages).
+The subpath comes from `ASTRO_BASE`, which is why internal links go through `url()` from `src/lib/url.ts`. Use `url('/kniha')`, never a bare `href="/kniha"`.
+
+**Production:** once `coachingacademy.sk` is set as the custom domain in Settings → Pages, the base path is empty and the same workflow builds
+in production mode (indexable). With `build.format: 'file'` and `trailingSlash: 'never'`, URLs look like `/kniha` (no trailing slash).
+DNS at Websupport: only the `coachingacademy.sk` A record and the `www` record change. Never touch MX, `mailin*`, `mail`/`smtp`/`imap`/`pop3`, SPF or DKIM records: the mailboxes live on the Websupport builder service.
 
 Old Websupport URLs are mapped in `redirects` in `astro.config.mjs`. On a plain static host they become meta-refresh pages. For real `301` redirects, deploy with the Netlify, Vercel or Cloudflare adapter, or write them into the host's redirect config.
 
 ## Before launch
 
-- [ ] Choose hosting, point the domain, and verify real 301 redirects from the old URLs
-- [ ] Stripe Payment Link + form endpoint in env
+- [ ] Form endpoint (`PUBLIC_FORM_ENDPOINT`) as a repository variable, test order reaches dalibor@coachingacademy.sk
+- [ ] Point the domain (custom domain in GitHub Pages + A/www records at Websupport) and check the old URLs redirect
 - [ ] Cookie consent banner before re-adding Google Tag Manager / Smartlook from the old site
 - [ ] Content TODOs marked with `<!-- … -->` comments in `src/content` (stale workshop date, a bonus price, a wrong e-mail in VOP)
-- [ ] Have the GDPR page updated for the new site (cookies, Stripe, form provider)
+- [ ] Have the GDPR page updated for the new site (cookies, form provider)
 - [ ] Submit `https://coachingacademy.sk/sitemap-index.xml` in Google Search Console

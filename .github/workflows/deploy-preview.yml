@@ -1,5 +1,7 @@
-# Builds the preview (noindex) and deploys it to GitHub Pages on every push to main.
-name: Deploy preview to GitHub Pages
+# Builds the site and deploys it to GitHub Pages on every push to main.
+# While Pages serves it under bonderukk.github.io/coachingacademy, it is built as a noindex preview.
+# Once the custom domain (coachingacademy.sk) is set in Settings → Pages, base_path is empty and the build is production.
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -27,11 +29,14 @@ jobs:
       - id: pages
         uses: actions/configure-pages@v6
       - run: npm ci
-      # --mode preview loads .env.preview (noindex on every page)
-      - run: npx astro build --mode preview
+      # --mode preview loads .env.preview (noindex on every page); production has no noindex.
+      - run: npx astro build --mode ${{ steps.pages.outputs.base_path == '' && 'production' || 'preview' }}
         env:
           ASTRO_SITE: ${{ steps.pages.outputs.origin }}
           ASTRO_BASE: ${{ steps.pages.outputs.base_path }}
+          # Repository variables (Settings → Secrets and variables → Actions → Variables); empty means e-mail fallback.
+          PUBLIC_FORM_ENDPOINT: ${{ vars.PUBLIC_FORM_ENDPOINT }}
+          PUBLIC_STRIPE_BOOK_LINK: ${{ vars.PUBLIC_STRIPE_BOOK_LINK }}
       - uses: actions/upload-pages-artifact@v5
         with:
           path: dist

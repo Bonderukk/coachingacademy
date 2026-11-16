@@ -1,6 +1,6 @@
 ---
 import { book, formatPrice } from '../config/site';
-import { bookOrderMailto } from '../lib/order';
+import { url } from '../lib/url';
 
 interface Props {
   variant?: 'primary' | 'light';
@@ -11,8 +11,8 @@ const { variant = 'primary', class: className } = Astro.props;
 const total = book.price + book.shipping;
 const label = `${book.preorder ? 'Predobjednať' : 'Kúpiť'} knihu – ${formatPrice(total)}`;
 
-// Until the Stripe Payment Link is configured, orders go by e-mail so the page is usable right away.
-const href = book.stripeLink || bookOrderMailto(book.shortTitle);
+// Stripe Payment Link if configured, otherwise our own order form (payment by bank transfer).
+const href = book.stripeLink || url('/objednavka?kniha=koucing');
 ---
 
 <a href={href} class:list={[variant === 'light' ? 'btn-light' : 'btn-primary', 'shine px-7 py-3.5 text-base', className]}>

@@ -1,5 +1,6 @@
 import { useEffect, useState, type SubmitEvent } from 'react';
 import { url } from '../lib/url';
+import { input, label } from './formStyles';
 
 interface Props {
   /** Form backend URL (Formspree, Web3Forms, …). Without it the form opens the visitor's e-mail app instead. */
@@ -11,10 +12,6 @@ interface Props {
 }
 
 type Status = 'idle' | 'sending' | 'sent' | 'error';
-
-const input =
-  'mt-1.5 block w-full rounded-xl border border-sand-300 bg-white px-4 py-3 text-[16px] text-ink placeholder:text-muted/60 focus:border-brand-700 focus:ring-2 focus:ring-brand-700/15 focus:outline-none';
-const label = 'block text-sm font-medium text-brand-950';
 
 export default function ContactForm({ endpoint, email, variant = 'contact', topics = [], defaultTopic = '' }: Props) {
   const [status, setStatus] = useState<Status>('idle');

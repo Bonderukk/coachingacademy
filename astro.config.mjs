@@ -18,7 +18,7 @@ export default defineConfig({
   integrations: [
     react(),
     sitemap({
-      filter: (page) => !page.includes('/dakujeme') && !page.includes('/zrusenie-objednavky'),
+      filter: (page) => !page.includes('/dakujeme') && !page.includes('/zrusenie-objednavky') && !page.includes('/objednavka'),
     }),
   ],
 

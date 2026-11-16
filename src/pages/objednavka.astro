@@ -1,0 +1,57 @@
+---
+// Book order form for KOUČING and the iSPAK books. Orders arrive by e-mail; payment is by bank transfer.
+// Links preselect the book: /objednavka?kniha=koucing, /objednavka?kniha=<id from src/content/knihy>&variant=<index>
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import BookOrderForm, { type OrderProduct } from '../components/BookOrderForm';
+import Icon from '../components/Icon.astro';
+import { book, formatPrice, site } from '../config/site';
+
+const ispak = (await getCollection('knihy')).sort((a, b) => a.data.order - b.data.order);
+const products: OrderProduct[] = [
+  { id: 'koucing', title: book.title, variants: [{ label: 'Tlačená kniha', price: book.price, digital: false }] },
+  ...ispak.map((entry) => ({
+    id: entry.id,
+    title: entry.data.title,
+    variants: entry.data.variants.map(({ label, price, digital }) => ({ label, price, digital })),
+  })),
+];
+const note = book.preorder ? `Kniha ${book.shortTitle} vychádza v termíne ${book.releaseLabel}, odošleme ju hneď po vydaní.` : undefined;
+---
+
+<BaseLayout title="Objednávka knihy" description="Objednávka kníh KOUČING a kníh o systemickej práci – platba prevodom, doručenie poštou na Slovensku." noindex>
+  <PageHero
+    eyebrow="Knihy"
+    title="Objednávka knihy"
+    lead="Vyplňte formulár. Potvrdenie objednávky a údaje na platbu prevodom vám pošleme e-mailom."
+    breadcrumbs={[{ label: 'Knihy', href: '/knihy' }, { label: 'Objednávka' }]}
+  />
+
+  <section class="section">
+    <div class="container-page grid grid-cols-1 gap-14 lg:grid-cols-[1fr_340px]">
+      <div>
+        <h2 class="sr-only">Objednávkový formulár</h2>
+        <BookOrderForm client:load endpoint={site.formEndpoint} email={site.email} products={products} shipping={book.shipping} note={note} />
+      </div>
+
+      <aside class="space-y-4" aria-label="Ako prebieha objednávka">
+        <div class="card p-6">
+          <h2 class="font-serif text-xl font-semibold">Ako to prebieha</h2>
+          <ol class="mt-4 space-y-3 text-[15px] text-muted">
+            <li class="flex gap-3"><span class="font-semibold text-brand-900">1.</span>Odošlete objednávku cez formulár.</li>
+            <li class="flex gap-3"><span class="font-semibold text-brand-900">2.</span>Do 2 pracovných dní vám e-mailom pošleme potvrdenie a údaje na platbu.</li>
+            <li class="flex gap-3"><span class="font-semibold text-brand-900">3.</span>Po prijatí platby knihu odošleme poštou (PDF verziu e-mailom).</li>
+          </ol>
+        </div>
+        <div class="card flex items-start gap-4 p-6">
+          <span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-900"><Icon name="mail" /></span>
+          <p class="text-[15px] text-muted">
+            Poštovné na Slovensku je {formatPrice(book.shipping)} za objednávku. Otázky? Napíšte na{' '}
+            <a href={`mailto:${site.email}`} class="font-semibold text-brand-900 underline">{site.email}</a>.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
