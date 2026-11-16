@@ -340,11 +340,14 @@ if ($action === 'order') {
     $customer = $order['customer'];
     $gone = $order['anonymized_at'] !== null;
 
+    // All four states side by side: the current one is filled and marked, the others are plain buttons that switch to it.
     $buttons = '';
     foreach (CA_STATUSES as $key => $label) {
-        if ($key !== $order['status']) {
+        if ($key === $order['status']) {
+            $buttons .= '<span class="state on st-' . $key . '" aria-current="true">✓ ' . ca_e($label) . '</span>';
+        } else {
             $buttons .= '<form method="post" action="?a=status">' . csrf_field() . '<input type="hidden" name="id" value="' . $order['id'] . '">'
-                . '<input type="hidden" name="to" value="' . $key . '"><button class="button ' . ($key === 'cancelled' ? 'ghost' : '') . '">Označiť: ' . ca_e($label) . '</button></form>';
+                . '<input type="hidden" name="to" value="' . $key . '"><button class="state" title="Zmeniť stav na: ' . ca_e($label) . '">' . ca_e($label) . '</button></form>';
         }
     }
 
@@ -385,7 +388,8 @@ if ($action === 'order') {
         . '<dt>Kniha</dt><dd>' . ca_e($order['item']) . '</dd><dt>Počet kusov</dt><dd>' . (int) $order['quantity'] . '</dd>'
         . '<dt>Doručenie</dt><dd>' . ca_e($order['delivery']) . '</dd>'
         . '<dt>Suma</dt><dd>' . $price . '</dd><dt>Platba</dt><dd>prevodom, variabilný symbol ' . ca_e($order['number']) . '</dd></dl>'
-        . '<div class="row">' . $buttons . '</div></section>'
+        . '<h3>Stav objednávky</h3><div class="row">' . $buttons . '</div>'
+        . '<p class="muted hint">Teraz je ' . ca_e(mb_strtolower(CA_STATUSES[$order['status']] ?? $order['status'])) . '. Kliknutím na iný stav ho zmeníte.</p></section>'
         . '<section class="card"><h2>Zákazník</h2>' . $who . '</section></div>'
         . '<section class="card"><h2>História</h2><ul class="history">' . $history . '</ul></section>'
         . '<section class="card quiet"><h2>Ochrana osobných údajov</h2>'

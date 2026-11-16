@@ -111,6 +111,26 @@ tr:last-child td { border-bottom: 0; }
 .st-shipped { background: #e3e7f5; color: #2b3a7a; }
 .st-cancelled { background: #eee9e6; color: var(--muted); }
 
+/* Order state switch: the current state is filled (not clickable), the others are outlined buttons. */
+h3 { margin: 18px 0 8px; color: var(--muted); font: 600 0.8rem system-ui, sans-serif; letter-spacing: 0.06em; text-transform: uppercase; }
+.state {
+  display: inline-block;
+  padding: 8px 16px;
+  background: var(--white);
+  border: 1px solid #d5c6b4;
+  border-radius: 999px;
+  color: var(--ink);
+  font: 500 0.95rem system-ui, sans-serif;
+  cursor: pointer;
+}
+button.state:hover { border-color: var(--brand); color: var(--brand); }
+.state.on { border-color: currentColor; font-weight: 700; cursor: default; }
+.state.on.st-new { background: #fdf0d5; color: #7a4b00; }
+.state.on.st-paid { background: #dcefe1; color: #1c5a30; }
+.state.on.st-shipped { background: #e3e7f5; color: #2b3a7a; }
+.state.on.st-cancelled { background: #eee9e6; color: var(--muted); }
+.hint { margin: 10px 0 0; font-size: 0.85rem; }
+
 dl { display: grid; grid-template-columns: max-content 1fr; gap: 8px 18px; margin: 0 0 16px; }
 dt { color: var(--muted); }
 dd { margin: 0; overflow-wrap: anywhere; }
