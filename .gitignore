@@ -27,3 +27,6 @@ pnpm-debug.log*
 
 # original photos/logos as delivered (optimized copies live in src/assets)
 fotkyalogananovyweb1/
+
+# server-side secrets for the form endpoint (recipients, SMTP password)
+server/form-config.php

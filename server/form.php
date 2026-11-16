@@ -6,6 +6,9 @@
  * Websupport webhosting (dalibus_1) under the domain coachacademy.sk and e-mails each submission
  * to Dad. The site's PUBLIC_FORM_ENDPOINT points at https://coachacademy.sk/form.php.
  *
+ * Optional settings live in form-config.php next to this file (see form-config.example.php). That
+ * file stays on the server only and is not in git, because it holds the recipients and the SMTP password.
+ *
  * The forms send the same fields Formspree would: `_subject` (e-mail subject), `_gotcha` (honeypot),
  * `email` (the visitor's address, used as Reply-To) and the visible fields.
  * Works on PHP 7.4+.
@@ -13,10 +16,20 @@
 
 // ---- Settings ----------------------------------------------------------------------------------
 
-const MAIL_TO = 'dalibor@coachingacademy.sk';
-// Sender on this hosting's own domain, so SPF passes. Replies go to the visitor (Reply-To).
-const MAIL_FROM = 'web@coachacademy.sk';
-const MAIL_FROM_NAME = 'Web coachingacademy.sk';
+// Defaults; form-config.php can override them.
+$config = [
+    // One address or a list.
+    'mail_to' => 'dalibor@coachingacademy.sk',
+    // Sender used with PHP mail(). With SMTP the sender is the SMTP mailbox.
+    'mail_from' => 'web@coachacademy.sk',
+    'mail_from_name' => 'Web coachingacademy.sk',
+    // Authenticated SMTP (recommended): ['host' => 'smtp.m1.websupport.sk', 'port' => 465, 'user' => '…', 'pass' => '…'].
+    // Without it, PHP mail() is used.
+    'smtp' => null,
+];
+if (is_readable(__DIR__ . '/form-config.php')) {
+    $config = array_merge($config, (array) require __DIR__ . '/form-config.php');
+}
 
 // Pages allowed to submit (the live site, the GitHub Pages preview, local development).
 const ALLOWED_ORIGINS = [
@@ -49,7 +62,7 @@ const LABELS = [
     'suhlas' => 'Súhlas s podmienkami',
 ];
 
-// ---- Request handling --------------------------------------------------------------------------
+// ---- Helpers -----------------------------------------------------------------------------------
 
 date_default_timezone_set('Europe/Bratislava');
 
@@ -72,6 +85,65 @@ function encode_header(string $value): string
 {
     return '=?UTF-8?B?' . base64_encode($value) . '?=';
 }
+
+/**
+ * Sends a message over authenticated SMTP (implicit TLS, port 465). Returns null on success,
+ * otherwise a short reason for the server log.
+ */
+function smtp_send(array $smtp, string $from, array $to, string $message): ?string
+{
+    $host = $smtp['host'];
+    $port = (int) ($smtp['port'] ?? 465);
+    $socket = @stream_socket_client("ssl://$host:$port", $errno, $errstr, 20, STREAM_CLIENT_CONNECT,
+        stream_context_create(['ssl' => ['peer_name' => $host]]));
+    if (!$socket) {
+        return "connect: $errstr";
+    }
+    stream_set_timeout($socket, 20);
+
+    // Reads one (possibly multi-line) reply and checks its status code.
+    $expect = function (string $code) use ($socket): ?string {
+        $reply = '';
+        while (($line = fgets($socket, 1024)) !== false) {
+            $reply .= $line;
+            if (strlen($line) < 4 || $line[3] === ' ') {
+                break;
+            }
+        }
+        return strncmp($reply, $code, 3) === 0 ? null : trim($reply);
+    };
+    $command = function (string $line, string $code) use ($socket, $expect): ?string {
+        fwrite($socket, $line . "\r\n");
+        return $expect($code);
+    };
+
+    $steps = [
+        fn () => $expect('220'),
+        fn () => $command('EHLO coachacademy.sk', '250'),
+        fn () => $command('AUTH LOGIN', '334'),
+        fn () => $command(base64_encode($smtp['user']), '334'),
+        fn () => $command(base64_encode($smtp['pass']), '235'),
+        fn () => $command("MAIL FROM:<$from>", '250'),
+    ];
+    foreach ($to as $recipient) {
+        $steps[] = fn () => $command("RCPT TO:<$recipient>", '250');
+    }
+    $steps[] = fn () => $command('DATA', '354');
+    // Dot-stuffing: a line starting with "." must be doubled inside DATA.
+    $steps[] = fn () => $command(preg_replace('/^\./m', '..', $message) . "\r\n.", '250');
+
+    foreach ($steps as $i => $step) {
+        if (($error = $step()) !== null) {
+            fclose($socket);
+            return "step $i: $error";
+        }
+    }
+    fwrite($socket, "QUIT\r\n");
+    fclose($socket);
+    return null;
+}
+
+// ---- Request handling --------------------------------------------------------------------------
 
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 if (in_array($origin, ALLOWED_ORIGINS, true)) {
@@ -148,15 +220,41 @@ $body = implode("\n", $lines)
     . "\n\n--\nOdoslané z webu coachingacademy.sk " . date('j. n. Y H:i')
     . "\nNa tento e-mail môžete priamo odpovedať, odpoveď pôjde odosielateľovi.\n";
 
-$headers = implode("\r\n", [
-    'From: ' . encode_header(MAIL_FROM_NAME) . ' <' . MAIL_FROM . '>',
-    'Reply-To: ' . $visitorEmail,
-    'MIME-Version: 1.0',
-    'Content-Type: text/plain; charset=UTF-8',
-    'Content-Transfer-Encoding: 8bit',
-]);
+$to = array_values(array_filter((array) $config['mail_to'], function ($a) { return filter_var($a, FILTER_VALIDATE_EMAIL); }));
+$smtp = is_array($config['smtp']) && !empty($config['smtp']['host']) ? $config['smtp'] : null;
+$from = $smtp ? $smtp['user'] : $config['mail_from'];
+$fromHeader = encode_header($config['mail_from_name']) . " <$from>";
 
-$sent = mail(MAIL_TO, encode_header($subject), $body, $headers, '-f' . MAIL_FROM);
+if ($smtp) {
+    $message = implode("\r\n", [
+        'Date: ' . date('r'),
+        'Message-ID: <' . bin2hex(random_bytes(12)) . '@coachacademy.sk>',
+        "From: $fromHeader",
+        'To: ' . implode(', ', $to),
+        "Reply-To: $visitorEmail",
+        'Subject: ' . encode_header($subject),
+        'MIME-Version: 1.0',
+        'Content-Type: text/plain; charset=UTF-8',
+        'Content-Transfer-Encoding: base64',
+        '',
+        rtrim(chunk_split(base64_encode($body), 76, "\r\n")),
+    ]);
+    $error = smtp_send($smtp, $from, $to, $message);
+    $sent = $error === null;
+    if (!$sent) {
+        error_log("form.php SMTP failed: $error");
+    }
+} else {
+    $headers = implode("\r\n", [
+        "From: $fromHeader",
+        "Reply-To: $visitorEmail",
+        'MIME-Version: 1.0',
+        'Content-Type: text/plain; charset=UTF-8',
+        'Content-Transfer-Encoding: 8bit',
+    ]);
+    $sent = mail(implode(', ', $to), encode_header($subject), $body, $headers, '-f' . $from);
+}
+
 if (!$sent) {
     respond(500, ['ok' => false, 'error' => 'mail']);
 }
