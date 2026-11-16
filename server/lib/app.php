@@ -363,7 +363,10 @@ function ca_http_get(string $url): ?string
         ]);
         $body = curl_exec($curl);
         $status = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
+        // Needed only before PHP 8.0; newer versions free the handle themselves and 8.5 warns about the call.
+        if (PHP_VERSION_ID < 80000) {
+            curl_close($curl);
+        }
         return is_string($body) && $status === 200 && strlen($body) < 200000 ? $body : null;
     }
     if (ini_get('allow_url_fopen')) {
