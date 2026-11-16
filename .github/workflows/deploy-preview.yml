@@ -32,7 +32,8 @@ jobs:
       # --mode preview loads .env.preview (noindex on every page); production has no noindex.
       - run: npx astro build --mode ${{ steps.pages.outputs.base_path == '' && 'production' || 'preview' }}
         env:
-          ASTRO_SITE: ${{ steps.pages.outputs.origin }}
+          # Production always uses the https address, even before GitHub has finished issuing the certificate.
+          ASTRO_SITE: ${{ steps.pages.outputs.base_path == '' && 'https://coachingacademy.sk' || steps.pages.outputs.origin }}
           ASTRO_BASE: ${{ steps.pages.outputs.base_path }}
           # Repository variables (Settings → Secrets and variables → Actions → Variables); empty means e-mail fallback.
           PUBLIC_FORM_ENDPOINT: ${{ vars.PUBLIC_FORM_ENDPOINT }}

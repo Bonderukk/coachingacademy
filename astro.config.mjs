@@ -68,6 +68,20 @@ export default defineConfig({
     '/cv': '/o-mne#cv',
     '/store/product/kniha-koučing-polarity-pre-šťastný-život-a-úspech-v-práci': '/kniha',
     '/site-231023-cancellation': '/zrusenie-objednavky',
+    // The rest of the old sitemap (checked 2026-11-16): pages without their own counterpart go to the closest one.
+    '/služby/index': '/sluzby',
+    '/o-nás/index': '/vycviky',
+    '/workshopy1/index': '/sluzby',
+    '/workshopy1/umenie-vyjednávať': '/sluzby',
+    '/workshopy1/systemic-inner-leadership': '/sluzby/leadership',
+    '/workshopy1/princíp-polarity-a-problematické-situácie': '/vycviky/business-life-coaching-core',
+    '/workshopy1/princíp-polarity-základ-a-podstata': '/vycviky/business-life-coaching-core',
+    '/mentoring-a-supervízia': '/sluzby/individualny-koucing',
+    '/koucing': '/kniha',
+    '/koucingodpoved': '/kniha',
+    '/potvrdenie': '/kontakt',
+    '/terms-and-conditions': '/vop',
+    '/store/terms-and-conditions': '/vop',
   },
 
   vite: {
