@@ -101,20 +101,26 @@ React loads only on pages with `ContactForm` (contact, services, withdrawal) or 
 
 Every push to `main` builds the site and deploys it to GitHub Pages (`.github/workflows/deploy-preview.yml`).
 
-**Preview:** while Pages serves the site at https://bonderukk.github.io/coachingacademy/, the build runs in preview mode (`noindex` on all pages).
-The subpath comes from `ASTRO_BASE`, which is why internal links go through `url()` from `src/lib/url.ts`. Use `url('/kniha')`, never a bare `href="/kniha"`.
+**Production (live since 16 November 2026):** `coachingacademy.sk` is the custom domain in Settings → Pages, so the base path is empty and
+the workflow builds in production mode (indexable). With `build.format: 'file'` and `trailingSlash: 'never'`, URLs look like `/kniha` (no trailing slash).
+DNS at Websupport: the `coachingacademy.sk` A records point to GitHub Pages (185.199.108–111.153) and `www` is a CNAME to `bonderukk.github.io`.
+Never touch MX, `mailin*`, `mail`/`smtp`/`imap`/`pop3`, SPF or DKIM records: the mailboxes live on the Websupport builder service.
+To go back to the old builder site, point the A record and `www` at 37.9.175.34 again.
 
-**Production:** once `coachingacademy.sk` is set as the custom domain in Settings → Pages, the base path is empty and the same workflow builds
-in production mode (indexable). With `build.format: 'file'` and `trailingSlash: 'never'`, URLs look like `/kniha` (no trailing slash).
-DNS at Websupport: only the `coachingacademy.sk` A record and the `www` record change. Never touch MX, `mailin*`, `mail`/`smtp`/`imap`/`pop3`, SPF or DKIM records: the mailboxes live on the Websupport builder service.
+**Preview:** if the custom domain is removed, Pages serves the site at https://bonderukk.github.io/coachingacademy/ and the build runs in
+preview mode (`noindex` on all pages). The subpath comes from `ASTRO_BASE`, which is why internal links go through `url()` from
+`src/lib/url.ts`. Use `url('/kniha')`, never a bare `href="/kniha"`.
+
+GitHub Pages is not meant for running an online business. This site is mainly a presentation and payments happen off-site, but if
+that ever becomes a problem, the static `dist/` can move to the Websupport webhosting (ask their support first whether assigning
+`coachingacademy.sk` there as web-only leaves the mailboxes alone).
 
 Old Websupport URLs are mapped in `redirects` in `astro.config.mjs`. On a plain static host they become meta-refresh pages. For real `301` redirects, deploy with the Netlify, Vercel or Cloudflare adapter, or write them into the host's redirect config.
 
-## Before launch
+## After launch
 
-- [ ] Form endpoint (`PUBLIC_FORM_ENDPOINT`) as a repository variable, test order reaches dalibor@coachingacademy.sk
-- [ ] Point the domain (custom domain in GitHub Pages + A/www records at Websupport) and check the old URLs redirect
+- [ ] Submit `https://coachingacademy.sk/sitemap-index.xml` in Google Search Console
+- [ ] Remove the temporary Gmail copy from `mail_to` in `form-config.php` (customer data should not go to a private mailbox)
 - [ ] Cookie consent banner before re-adding Google Tag Manager / Smartlook from the old site
 - [ ] Content TODOs marked with `<!-- … -->` comments in `src/content` (stale workshop date, a bonus price, a wrong e-mail in VOP)
 - [ ] Dad reads the updated GDPR page (orders section, cookies section) and confirms the retention periods
-- [ ] Submit `https://coachingacademy.sk/sitemap-index.xml` in Google Search Console
